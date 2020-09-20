@@ -25,6 +25,7 @@ namespace ConsoleMenu
         public void Render()
         {
             Console.Clear();
+            CurrentMenuItem.HoverChild(_lineIndex);
             _baseMenuItem.Render(0, 0);
         }
 
@@ -47,7 +48,7 @@ namespace ConsoleMenu
                         _lineIndex = Math.Max(0, _lineIndex - 1);
                         break;
                     case ConsoleKey.DownArrow:
-                        _lineIndex = Math.Min(Console.WindowHeight, _lineIndex + 1);
+                        _lineIndex = Math.Min(Console.WindowHeight - 1, _lineIndex + 1);
                         break;
                     case ConsoleKey.RightArrow:
                         CurrentMenuItem = CurrentMenuItem.TrySelectChild(_lineIndex, out _lineIndex);
