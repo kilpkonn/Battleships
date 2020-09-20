@@ -20,6 +20,11 @@ namespace ConsoleMenu
             OnSelectedCallback = onSelectedCallback;
         }
 
+        public virtual void AddChildItem(MenuItem item)
+        {
+            ChildItems.Add(item);
+        }
+
         public virtual void OnSelect()
         {
             IsSelected = true;
@@ -32,9 +37,20 @@ namespace ConsoleMenu
             OnDeselectedCallback?.Invoke();
         }
 
-        public virtual void Render(uint offset, uint level)
+        public virtual void Render(int offset, int level)
         {
-            Console.WriteLine(Label);
+            Console.SetCursorPosition(level * 8, offset);
+            Console.Write(Label);
+
+            if (IsSelected)
+            {
+                ChildItems.ForEach(item => item.Render(offset++, level + 1));
+            }
+        }
+
+        public bool HasChildren()
+        {
+            return ChildItems.Count > 0;
         }
     }
 }
