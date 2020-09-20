@@ -15,6 +15,7 @@ namespace ConsoleMenu
         public string Preview { get; set; }
         
         public MenuItem? Parent { get; protected set; }
+        private int _parentIndex = 0;
         public Action OnSelectedCallback { get; set; }
         public Action? OnDeselectedCallback { get; set; }
         
@@ -48,23 +49,32 @@ namespace ConsoleMenu
 
         public virtual void Render(int offset, int level)
         {
-            Console.SetCursorPosition(level * 8, offset);
+            if (level >= 0)
+            {
 
-            if (IsSelected)
-            {
-                Console.ForegroundColor = SelectColor;
+                Console.SetCursorPosition(level * 14, offset);
+
+                if (IsSelected)
+                {
+                    Console.ForegroundColor = SelectColor;
+                }
+                else if (IsHovered)
+                {
+                    Console.ForegroundColor = HoverColor;
+                }
+
+                Console.Write(Label);
+                Console.ForegroundColor = ConsoleColor.White;
             }
-            else if (IsHovered)
-            {
-                Console.ForegroundColor = HoverColor;
-            }
-            
-            Console.Write(Label);
-            Console.ForegroundColor = ConsoleColor.White;
 
             if (IsSelected)
             {
                 _childItems.ForEach(item => item.Render(offset++, level + 1));
+            }
+            else if (IsHovered)
+            {
+                Console.SetCursorPosition((level + 1) * 14, offset);
+                Console.Write(Preview);
             }
         }
 
@@ -73,6 +83,7 @@ namespace ConsoleMenu
             if (0 <= index && index < _childItems.Count)
             {
                 newIndex = 0;
+                _childItems[index]._parentIndex = index;
                 _childItems[index].OnSelect();
                 return _childItems[index];
             }
@@ -85,7 +96,7 @@ namespace ConsoleMenu
         {
             if (Parent != null)
             {
-                newIndex = 0;
+                newIndex = _parentIndex;
                 OnDeselect();
                 return Parent;
             }

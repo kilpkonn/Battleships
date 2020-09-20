@@ -7,27 +7,32 @@ namespace ConsoleMenu
         static void Main(string[] args)
         {
             Menu menu = new Menu();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
-                var item = new MenuItem(
-                    i.ToString(),
-                    $"Help {i}",
-                    () => Console.WriteLine("Selected!")
-                    );
+                menu.AddMenuItem(GenerateItems(5, $"Item {i}"));
+            }
+            menu.Run();
+        }
 
-                for (int j = 0; j < 5; j++)
-                {
-                    item.AddChildItem(new MenuItem(
-                        $"{i} - {j}",
-                        "Help $i",
-                        () => Console.WriteLine("Selected child!")
-                    ));
-                }
-                
-                menu.AddMenuItem(item);
+        static MenuItem GenerateItems(int levels, string prefix = "Item")
+        {
+            var item = new MenuItem(
+                $"{prefix}",
+                $"Help {levels}",
+                () => Console.WriteLine("Selected!")
+            );
+
+            if (levels <= 0)
+            {
+                return item;
             }
             
-            menu.Run();
+            for (int i = 0; i < 10; i++)
+            {
+                item.AddChildItem(GenerateItems(levels - 1, $"{prefix} {i}"));
+            }
+
+            return item;
         }
     }
 }

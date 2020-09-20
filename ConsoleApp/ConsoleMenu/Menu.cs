@@ -26,7 +26,8 @@ namespace ConsoleMenu
         {
             Console.Clear();
             CurrentMenuItem.HoverChild(_lineIndex);
-            _baseMenuItem.Render(0, 0);
+            _baseMenuItem.Render(0, -1);
+            Console.WriteLine();
         }
 
         public void Run()
