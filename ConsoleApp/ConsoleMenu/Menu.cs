@@ -5,19 +5,27 @@ namespace ConsoleMenu
 {
     public class Menu
     {
-        protected readonly List<MenuItem> MenuItems = new List<MenuItem>();
-        private int LineIndex { get; set; }
-        private int LevelIndex { get; set; }
+        private readonly MenuItem _baseMenuItem = new MenuItem("Root", "Use arrows to move!", () => {});
+
+        protected MenuItem CurrentMenuItem { get; set; }
+        private int _lineIndex = 0;
+
+        public Menu()
+        {
+            _baseMenuItem.IsSelected = true;
+            CurrentMenuItem = _baseMenuItem;
+
+        }
 
         public void AddMenuItem(MenuItem item)
         {
-            MenuItems.Add(item);
+            _baseMenuItem.AddChildItem(item);
         }
 
         public void Render()
         {
-            int i = 0;
-            MenuItems.ForEach(item => item.Render(i++, 0));
+            Console.Clear();
+            _baseMenuItem.Render(0, 0);
         }
 
         public void Run()
@@ -36,21 +44,16 @@ namespace ConsoleMenu
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        LineIndex = Math.Max(0, LineIndex - 1);
+                        _lineIndex = Math.Max(0, _lineIndex - 1);
                         break;
                     case ConsoleKey.DownArrow:
-                        LineIndex = Math.Min(Console.WindowHeight, LineIndex + 1);
+                        _lineIndex = Math.Min(Console.WindowHeight, _lineIndex + 1);
                         break;
                     case ConsoleKey.RightArrow:
-                        if (MenuItems[LineIndex].HasChildren())
-                        {
-                            LevelIndex++;
-                            MenuItems[LineIndex].OnSelect();
-                        }
+                        CurrentMenuItem = CurrentMenuItem.TrySelectChild(_lineIndex, out _lineIndex);
                         break;
                     case ConsoleKey.LeftArrow:
-                        LevelIndex = Math.Max(0, LevelIndex - 1);
-                        MenuItems[LevelIndex].OnDeselect();
+                        CurrentMenuItem = CurrentMenuItem.TrySelectParent(_lineIndex, out _lineIndex);
                         break;
                     default:
                         break;

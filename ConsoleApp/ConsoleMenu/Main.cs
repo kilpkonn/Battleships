@@ -11,14 +11,14 @@ namespace ConsoleMenu
             {
                 var item = new MenuItem(
                     i.ToString(),
-                    "Help $i",
+                    $"Help {i}",
                     () => Console.WriteLine("Selected!")
                     );
 
                 for (int j = 0; j < 5; j++)
                 {
                     item.AddChildItem(new MenuItem(
-                        i.ToString(),
+                        $"{i} - {j}",
                         "Help $i",
                         () => Console.WriteLine("Selected child!")
                     ));
