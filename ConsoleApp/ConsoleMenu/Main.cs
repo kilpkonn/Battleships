@@ -18,8 +18,7 @@ namespace ConsoleMenu
         {
             var item = new MenuItem(
                 $"{prefix}",
-                $"Help {levels}",
-                () => Console.WriteLine("Selected!")
+                $"Help {levels}"
             );
 
             if (levels <= 0)

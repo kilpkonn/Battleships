@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
 
 namespace ConsoleMenu
 {
     public class Menu
     {
-        private readonly MenuItem _baseMenuItem = new MenuItem("Root", "Use arrows to move!", () => {});
+        private readonly MenuItem _baseMenuItem = new MenuItem("Root", "Use arrows to move!");
 
         protected MenuItem CurrentMenuItem { get; set; }
+        
         private int _lineIndex = 0;
 
         public Menu()
         {
             _baseMenuItem.IsSelected = true;
             CurrentMenuItem = _baseMenuItem;
-
         }
 
         public void AddMenuItem(MenuItem item)
@@ -26,7 +25,7 @@ namespace ConsoleMenu
         {
             Console.Clear();
             CurrentMenuItem.HoverChild(_lineIndex);
-            _baseMenuItem.Render(0, -1);
+            _baseMenuItem.Render(0, -1 * (_baseMenuItem.Width + _baseMenuItem.Padding));
             Console.WriteLine();
         }
 
@@ -49,7 +48,7 @@ namespace ConsoleMenu
                         _lineIndex = Math.Max(0, _lineIndex - 1);
                         break;
                     case ConsoleKey.DownArrow:
-                        _lineIndex = Math.Min(Console.WindowHeight - 1, _lineIndex + 1);
+                        _lineIndex = Math.Min(CurrentMenuItem.GetChildCount() - 1, _lineIndex + 1);
                         break;
                     case ConsoleKey.RightArrow:
                         CurrentMenuItem = CurrentMenuItem.TrySelectChild(_lineIndex, out _lineIndex);
