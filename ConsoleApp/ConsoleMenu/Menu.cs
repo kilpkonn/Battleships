@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace ConsoleMenu
 {
@@ -7,8 +8,16 @@ namespace ConsoleMenu
         private readonly MenuItem _baseMenuItem = new MenuItem("Root", "Use arrows to move!");
 
         protected MenuItem CurrentMenuItem { get; set; }
-        
+
         private int _lineIndex = 0;
+
+        public string HelpText { get; set; } = @"
+LEFT_ARROW - return to previous
+RIGHT_ARROW - choose current
+UP_ARROW - go to upper
+DOWN_ARROW - go to below
+
+ESC - Exit";
 
         public Menu()
         {
@@ -26,7 +35,9 @@ namespace ConsoleMenu
             Console.Clear();
             CurrentMenuItem.HoverChild(_lineIndex);
             _baseMenuItem.Render(0, -1 * (_baseMenuItem.Width + _baseMenuItem.Padding));
-            Console.WriteLine();
+            
+            Console.SetCursorPosition(0, Console.WindowHeight - 1);
+            Console.WriteLine("Use SPACE for help!");
         }
 
         public void Run()
@@ -37,9 +48,12 @@ namespace ConsoleMenu
                 Render();
                 var key = Console.ReadKey();
 
-                if (key.Key == ConsoleKey.Escape)
+                if (key.Key == ConsoleKey.Escape) break;
+                if (key.Key == ConsoleKey.Spacebar)
                 {
-                    break;
+                    ShowHelp();
+                    Console.ReadKey();
+                    continue;
                 }
 
                 switch (key.Key)
@@ -60,6 +74,7 @@ namespace ConsoleMenu
                         break;
                 }
             }
+            WriteBlanks();
         }
 
         protected void WriteBlanks()
@@ -68,6 +83,15 @@ namespace ConsoleMenu
             {
                 Console.WriteLine();
             }
+        }
+
+        protected void ShowHelp()
+        {
+            WriteBlanks();
+            int helpWidth = HelpText.Split("\n").Max(l => l.Length);
+            int helpHeight = HelpText.Split("\n").Length;
+            Console.SetCursorPosition((Console.WindowWidth - helpWidth) / 2, (Console.WindowHeight - helpHeight) / 2);
+            Console.WriteLine(HelpText);
         }
     }
 }
