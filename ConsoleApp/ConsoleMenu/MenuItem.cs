@@ -10,13 +10,13 @@ namespace ConsoleMenu
         public ConsoleColor HoverColor { get; set; } = ConsoleColor.Cyan;
         public ConsoleColor InactiveColor { get; set; } = ConsoleColor.Gray;
         public bool IsSelected { get; set; }
-        public bool IsHovered { get; set; }
+        public bool IsHovered { get; protected set; }
         public bool IsInactive { get; protected set; }
 
         public string Label { get; set; }
         public string Preview { get; set; }
 
-        public int Width { get; set; }
+        public int Width { get; private set; }
         public int Padding { get; set; } = 2;
 
         public bool OffsetChildMenus { get; set; } = false;

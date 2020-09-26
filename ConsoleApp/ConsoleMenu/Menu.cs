@@ -36,7 +36,7 @@ ESC - Exit";
             CurrentMenuItem.HoverChild(_lineIndex);
             _baseMenuItem.Render(0, -1 * (_baseMenuItem.Width + _baseMenuItem.Padding));
             
-            Console.SetCursorPosition(0, Console.WindowHeight - 1);
+            Console.SetCursorPosition(0, Console.WindowHeight - 2);
             Console.WriteLine("Use SPACE for help!");
         }
 
@@ -90,8 +90,10 @@ ESC - Exit";
             WriteBlanks();
             int helpWidth = HelpText.Split("\n").Max(l => l.Length);
             int helpHeight = HelpText.Split("\n").Length;
-            Console.SetCursorPosition((Console.WindowWidth - helpWidth) / 2, (Console.WindowHeight - helpHeight) / 2);
+            int left = Math.Max(0, (Console.WindowWidth - helpWidth) / 2);
+            int top = Math.Max(0, (Console.WindowHeight - helpHeight) / 2);
+            Console.SetCursorPosition(left, top);
             Console.WriteLine(HelpText);
         }
     }
-}
+} 
