@@ -6,20 +6,21 @@ namespace ConsoleMenu
 {
     public class MenuItem
     {
-
-        public ConsoleColor SelectColor { get; set; } = ConsoleColor.Red;
-        public ConsoleColor HoverColor { get; set; }= ConsoleColor.Cyan;
+        public ConsoleColor SelectColor { get; set; } = ConsoleColor.Blue;
+        public ConsoleColor HoverColor { get; set; } = ConsoleColor.Cyan;
+        public ConsoleColor InactiveColor { get; set; } = ConsoleColor.Gray;
         public bool IsSelected { get; set; }
         public bool IsHovered { get; set; }
-        
+        public bool IsInactive { get; protected set; }
+
         public string Label { get; set; }
         public string Preview { get; set; }
-        
+
         public int Width { get; set; }
-        public int Padding { get; set; }
+        public int Padding { get; set; } = 2;
 
         public bool OffsetChildMenus { get; set; } = false;
-        
+
         public MenuItem? Parent { get; protected set; }
         public Action? OnSelectedCallback { get; set; }
         public Action? OnDeselectedCallback { get; set; }
@@ -35,7 +36,6 @@ namespace ConsoleMenu
             Preview = preview;
             Parent = parent;
             Width = label.Length;
-            Padding = 2;
         }
 
         public virtual void AddChildItem(MenuItem item)
@@ -75,7 +75,6 @@ namespace ConsoleMenu
         {
             if (hOffset >= 0)
             {
-
                 Console.SetCursorPosition(hOffset, vOffset);
 
                 if (IsSelected)
@@ -85,6 +84,10 @@ namespace ConsoleMenu
                 else if (IsHovered)
                 {
                     Console.ForegroundColor = HoverColor;
+                }
+                else if (IsInactive)
+                {
+                    Console.ForegroundColor = InactiveColor;
                 }
 
                 Console.Write(Label);
@@ -110,6 +113,11 @@ namespace ConsoleMenu
                 newIndex = 0;
                 _childItems[index]._parentIndex = index;
                 _childItems[index].OnSelect();
+                for (int i = 0; i < _childItems.Count; i++)
+                {
+                    if (i != index) _childItems[i].IsInactive = true;
+                }
+
                 return _childItems[index];
             }
 
@@ -123,6 +131,7 @@ namespace ConsoleMenu
             {
                 newIndex = _parentIndex;
                 OnDeselect();
+                Parent._childItems.ForEach(child => child.IsInactive = false);
                 return Parent;
             }
 
@@ -132,10 +141,11 @@ namespace ConsoleMenu
 
         public void HoverChild(int index)
         {
-            if (index >= _childItems.Count || _childItems[index].IsHovered)
+            if (index < 0 || index >= _childItems.Count || _childItems[index].IsHovered)
             {
                 return;
             }
+
             _childItems.ForEach(child => child.OnHoverEnd());
             _childItems[index].OnHover();
         }
@@ -144,7 +154,7 @@ namespace ConsoleMenu
         {
             return _childItems.Count > 0;
         }
-        
+
         public int GetChildCount()
         {
             return _childItems.Count;

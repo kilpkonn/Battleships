@@ -37,7 +37,7 @@ namespace ConsoleMenu
                 Render();
                 var key = Console.ReadKey();
 
-                if (key.Key == ConsoleKey.Q)
+                if (key.Key == ConsoleKey.Escape)
                 {
                     break;
                 }
