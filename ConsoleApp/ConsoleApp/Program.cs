@@ -1,6 +1,7 @@
 ﻿using System;
+using ConsoleMenu;
 
-namespace ConsoleMenu
+namespace ConsoleApp
 {
     class Program
     {
