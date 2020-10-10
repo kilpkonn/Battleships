@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
+using ConsoleGame;
 using ConsoleMenu;
 
-namespace ConsoleGame
+namespace Battleships
 {
     public class MenuState: BaseState
     {

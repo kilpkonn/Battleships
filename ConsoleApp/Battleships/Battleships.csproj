@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ConsoleMenu\ConsoleMenu.csproj" />
+      <ProjectReference Include="..\Renderer\Renderer.csproj" />
     </ItemGroup>
 
 </Project>

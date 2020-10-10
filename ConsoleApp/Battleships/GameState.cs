@@ -1,6 +1,7 @@
 using System;
+using ConsoleGame;
 
-namespace ConsoleGame
+namespace Battleships
 {
     public class GameState: BaseState
     {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using ConsoleGame;
 
-namespace ConsoleGame
+namespace Battleships
 {
     public class Game
     {
@@ -53,7 +54,7 @@ namespace ConsoleGame
                     newState = new SetupState();
                     break;
                 case GameState.Game:
-                    newState = new ConsoleGame.GameState();
+                    newState = new Battleships.GameState();
                     break;
             }
 
