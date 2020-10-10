@@ -4,7 +4,7 @@ namespace ConsoleGame
     {
         public void Step()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
