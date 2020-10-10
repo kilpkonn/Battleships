@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleMenu", "ConsoleMenu\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{5569D13C-AFE6-48DB-9145-B3329CABDA7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleGame", "ConsoleGame\ConsoleGame.csproj", "{3E4D46CA-89DD-4939-AA1A-F2BA7A5BEB03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships", "Battleships\Battleships.csproj", "{6775F6ED-9EE6-4B86-8D7A-2862AF398CAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{5569D13C-AFE6-48DB-9145-B3329CABDA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5569D13C-AFE6-48DB-9145-B3329CABDA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5569D13C-AFE6-48DB-9145-B3329CABDA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4D46CA-89DD-4939-AA1A-F2BA7A5BEB03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4D46CA-89DD-4939-AA1A-F2BA7A5BEB03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4D46CA-89DD-4939-AA1A-F2BA7A5BEB03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4D46CA-89DD-4939-AA1A-F2BA7A5BEB03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6775F6ED-9EE6-4B86-8D7A-2862AF398CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6775F6ED-9EE6-4B86-8D7A-2862AF398CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6775F6ED-9EE6-4B86-8D7A-2862AF398CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6775F6ED-9EE6-4B86-8D7A-2862AF398CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
