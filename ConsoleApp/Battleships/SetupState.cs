@@ -6,8 +6,13 @@ namespace Battleships
 {
     public class SetupState : BaseState
     {
-        private readonly Game _game = Game.GetInstance();
+        private readonly Game _game;
         private readonly ConsoleRenderer _renderer = new ConsoleRenderer();
+
+        public SetupState(Game game)
+        {
+            _game = game;
+        }
 
         public void Step()
         {
@@ -21,9 +26,9 @@ namespace Battleships
             Console.ReadKey();
 
             var layer = _game.GameBoard.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
-            bool choosing = true;
             do
             {
+                bool choosing = true;
                 while (choosing)
                 {
                     _renderer.Render(_game.GameBoard.Board[(int) layer]);
@@ -47,7 +52,7 @@ namespace Battleships
                             break;
                     }
                 }
-            } while (_game.GameBoard.PlaceShip(_renderer.HighlightY, _renderer.HighlightX));
+            } while (!_game.GameBoard.PlaceShip(_renderer.HighlightY, _renderer.HighlightX));
 
             _renderer.HighlightX = 0;
             _renderer.HighlightY = 0;

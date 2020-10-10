@@ -1,18 +1,22 @@
 using System;
 using System.Linq;
+using Battleships.Serializer;
 using ConsoleGame;
 using ConsoleMenu;
 
 namespace Battleships
 {
-    public class MenuState: BaseState
+    public class MenuState : BaseState
     {
-         private Menu Menu { get; set; } = new Menu();
+        private readonly Game _game;
+        private Menu Menu { get; set; } = new Menu();
         private MenuItem SetSizeItem { get; set; }
         private MenuItem BoardWidthItem { get; set; }
         private MenuItem BoardHeightIem { get; set; }
+        private MenuItem LoadGameItem { get; set; }
 
         private int _boardWidth = 10;
+
         private int BoardWidth
         {
             get => _boardWidth;
@@ -27,13 +31,19 @@ namespace Battleships
             set => _boardHeight = Math.Clamp(value, Game.MinBoardHeight, Game.MaxBoardHeight);
         }
 
-        public MenuState()
+        public MenuState(Game game)
         {
+            _game = game;
             Menu.AddMenuItem(new MenuItem("Start Game", "Starts game", onSelectedCallback: StartGame));
             Menu.AddMenuItem(new MenuItem("Save game", "Save game to json", onSelectedCallback: SaveGame));
-            SetSizeItem = new MenuItem($"Set board size [{BoardWidth} x {BoardHeight}]", $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}");
-            BoardWidthItem = new MenuItem($"Set width [{BoardWidth}]", $"Sets the width of board. Currently {BoardWidth}", onSelectedCallback: SetBoardWidth);
-            BoardHeightIem = new MenuItem($"Set height [{BoardHeight}]", $"Sets height of board. Currently {BoardHeight}", onSelectedCallback: SetBoardHeight);
+            LoadGameItem = new MenuItem("Load game", "Load game from file", onSelectedCallback: LoadGameSelected);
+            Menu.AddMenuItem(LoadGameItem);
+            SetSizeItem = new MenuItem($"Set board size [{BoardWidth} x {BoardHeight}]",
+                $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}");
+            BoardWidthItem = new MenuItem($"Set width [{BoardWidth}]",
+                $"Sets the width of board. Currently {BoardWidth}", onSelectedCallback: SetBoardWidth);
+            BoardHeightIem = new MenuItem($"Set height [{BoardHeight}]",
+                $"Sets height of board. Currently {BoardHeight}", onSelectedCallback: SetBoardHeight);
             SetSizeItem.AddChildItem(BoardWidthItem);
             SetSizeItem.AddChildItem(BoardHeightIem);
             Menu.AddMenuItem(SetSizeItem);
@@ -42,19 +52,42 @@ namespace Battleships
 
         public void Step()
         {
-            Menu.Run();   
+            Menu.Run();
         }
 
         private void StartGame()
         {
-            Game.GetInstance().GameBoard = new GameBoard(_boardWidth, _boardHeight);
-            Game.GetInstance().PushState(Game.GameState.Setup);
+            _game.GameBoard = new GameBoard(_boardWidth, _boardHeight);
+            _game.PushState(Game.GameState.Setup);
             Menu.Close();
         }
 
         private void SaveGame()
         {
-            // TODO: !!
+            Util.ConsoleUtil.WriteBlanks();
+            Console.SetCursorPosition(0, Console.WindowHeight / 2);
+            string defaultName = "game_" + DateTime.Now.ToString("yyyy-MM-dd");
+            Console.Write($"Enter file name ({defaultName}): ");
+            string name = Console.ReadLine() ?? "";
+            if (string.IsNullOrEmpty(name)) name = defaultName;
+            if (!name.EndsWith(".json")) name += ".json";
+            GameJsonSerializer serializer = GameJsonSerializer.FromGame(_game);
+            serializer.SaveToFile(name);
+        }
+
+        private void LoadGameSelected()
+        {
+            LoadGameItem.ClearChildItems();
+            var files = System.IO.Directory.EnumerateFiles(".", "*.json").ToList();
+            files.ForEach(file =>
+            {
+                LoadGameItem.AddChildItem(new MenuItem(file, $"Load from {file}",
+                    onSelectedCallback: () => LoadGame(file)));
+            });
+        }
+
+        private void LoadGame(string file)
+        {
         }
 
         private void SetBoardWidth()
@@ -65,7 +98,7 @@ namespace Battleships
                 Console.Write($"Enter board width in range [{Game.MinBoardWidth} - {Game.MaxBoardWidth}]: ");
                 input = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-            
+
             BoardWidth = Convert.ToInt32(input);
             SetSizeItem.Preview = $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}";
             SetSizeItem.Label = $"Set board size [{BoardWidth} x {BoardHeight}]";
@@ -82,7 +115,7 @@ namespace Battleships
                 Console.Write($"Enter board height in range [{Game.MinBoardHeight} - {Game.MaxBoardHeight}]: ");
                 input = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-            
+
             BoardHeight = Convert.ToInt32(input);
             SetSizeItem.Preview = $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}";
             SetSizeItem.Label = $"Set board size [{BoardWidth} x {BoardHeight}]";
@@ -94,6 +127,7 @@ namespace Battleships
         private void Exit()
         {
             Menu.Close();
+            _game.Exit();
         }
     }
 }

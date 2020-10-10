@@ -46,6 +46,12 @@ namespace ConsoleMenu
             _childItems.ForEach(c => c.Width = _childItems.Max(i => i.Width));
         }
 
+        public void ClearChildItems()
+        {
+            _childItems.ForEach(c => c.Parent = null);
+            _childItems.Clear();
+        }
+
         private void OnSelect()
         {
             IsSelected = true;

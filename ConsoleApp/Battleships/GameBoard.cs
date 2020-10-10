@@ -10,10 +10,12 @@ namespace Battleships
             BlackHits = 3
         }
 
-        public bool[][,] Board { get; private set; } = new bool[4][,];
+        public bool[][,] Board { get; } = new bool[4][,];
         public bool WhiteToMove { get; private set; } = true;
-        public int Height { get; private set; }
-        public int Width { get; private set; }
+        public int Height { get; }
+        public int Width { get; }
+
+        public bool IsSetup { get; private set; } = true;
 
         public GameBoard(int width, int height)
         {

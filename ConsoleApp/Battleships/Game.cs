@@ -17,7 +17,7 @@ namespace Battleships
         public const int MaxBoardWidth = 30;
         public const int MaxBoardHeight = 30;
 
-        private static Game? _instance = null;
+        private static Game? _instance;
 
         public static Game GetInstance()
         {
@@ -27,11 +27,11 @@ namespace Battleships
         public GameBoard? GameBoard { get; set; }
         public bool IsRunning { get; set; } = true;
 
-        private Stack<BaseState> GameStates { get; set; } = new Stack<BaseState>();
+        private Stack<BaseState> GameStates { get; } = new Stack<BaseState>();
 
         private Game()
         {
-            GameStates.Push(new MenuState());
+            GameStates.Push(new MenuState(this));
         }
 
         public void Run()
@@ -48,10 +48,10 @@ namespace Battleships
             switch (state)
             {
                 case GameState.Menu:
-                    newState = new MenuState();
+                    newState = new MenuState(this);
                     break;
                 case GameState.Setup:
-                    newState = new SetupState();
+                    newState = new SetupState(this);
                     break;
                 case GameState.Game:
                     newState = new Battleships.GameState();
@@ -59,6 +59,11 @@ namespace Battleships
             }
 
             GameStates.Push(newState!);
+        }
+
+        public void Exit()
+        {
+            IsRunning = false;
         }
     }
 }
