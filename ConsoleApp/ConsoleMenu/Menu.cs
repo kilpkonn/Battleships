@@ -10,6 +10,7 @@ namespace ConsoleMenu
         protected MenuItem CurrentMenuItem { get; set; }
 
         private int _lineIndex = 0;
+        private bool _isRunning = true;
 
         public string HelpText { get; set; } = @"
 LEFT_ARROW - return to previous
@@ -43,7 +44,7 @@ ESC - Exit";
         public void Run()
         {
             WriteBlanks();
-            while (true)
+            while (_isRunning)
             {
                 Render();
                 var key = Console.ReadKey();
@@ -64,6 +65,7 @@ ESC - Exit";
                     case ConsoleKey.DownArrow:
                         _lineIndex = Math.Min(CurrentMenuItem.GetChildCount() - 1, _lineIndex + 1);
                         break;
+                    case ConsoleKey.Enter:
                     case ConsoleKey.RightArrow:
                         CurrentMenuItem = CurrentMenuItem.TrySelectChild(_lineIndex, out _lineIndex);
                         break;
@@ -77,7 +79,7 @@ ESC - Exit";
             WriteBlanks();
         }
 
-        protected void WriteBlanks()
+        public void WriteBlanks()
         {
             for (int i = 0; i < Console.WindowHeight; i++)
             {
@@ -94,6 +96,12 @@ ESC - Exit";
             int top = Math.Max(0, (Console.WindowHeight - helpHeight) / 2);
             Console.SetCursorPosition(left, top);
             Console.WriteLine(HelpText);
+        }
+        
+
+        public void Close()
+        {
+            _isRunning = false;
         }
     }
 } 

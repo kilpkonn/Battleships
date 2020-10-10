@@ -30,12 +30,13 @@ namespace ConsoleMenu
         private int _parentIndex = 0;
         private readonly List<MenuItem> _childItems = new List<MenuItem>();
 
-        public MenuItem(string label, string preview, MenuItem? parent = null)
+        public MenuItem(string label, string preview, MenuItem? parent = null, Action? onSelectedCallback = null)
         {
             Label = label;
             Preview = preview;
             Parent = parent;
             Width = label.Length;
+            OnSelectedCallback = onSelectedCallback;
         }
 
         public virtual void AddChildItem(MenuItem item)
