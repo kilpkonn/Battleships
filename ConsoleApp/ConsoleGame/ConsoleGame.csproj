@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Battleships\Battleships.csproj" />
       <ProjectReference Include="..\ConsoleMenu\ConsoleMenu.csproj" />
     </ItemGroup>
 

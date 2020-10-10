@@ -11,12 +11,11 @@ namespace ConsoleGame
         }
         
         public bool [,,] Board { get; private set; }
-        public bool WhiteToMove { get; private set; }
+        public bool WhiteToMove { get; private set; } = true;
 
         public GameBoard(int width, int height)
         {
             Board = new bool[4, height, width];
-            WhiteToMove = true;
         }
 
         public bool PlaceShip(int y, int x)

@@ -23,6 +23,7 @@ namespace ConsoleGame
             return _instance ??= new Game();
         }
 
+        public GameBoard? GameBoard { get; set; }
         public bool IsRunning { get; set; } = true;
 
         private Stack<BaseState> GameStates { get; set; } = new Stack<BaseState>();

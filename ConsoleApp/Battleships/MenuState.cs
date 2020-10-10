@@ -46,6 +46,7 @@ namespace ConsoleGame
 
         private void StartGame()
         {
+            Game.GetInstance().GameBoard = new GameBoard(_boardWidth, _boardHeight);
             Game.GetInstance().PushState(Game.GameState.Setup);
             Menu.Close();
         }
