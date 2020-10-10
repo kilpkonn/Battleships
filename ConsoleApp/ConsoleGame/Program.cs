@@ -7,7 +7,7 @@ namespace ConsoleGame
         static void Main(string[] args)
         {
             Console.WriteLine("Launching Battleships...");
-            Game game = new Game();
+            Game game = Game.GetInstance();
             game.Run();
         }
     }

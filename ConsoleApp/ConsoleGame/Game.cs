@@ -1,89 +1,58 @@
-using System;
-using System.Linq;
-using ConsoleMenu;
+using System.Collections.Generic;
 
 namespace ConsoleGame
 {
     public class Game
     {
-        private const int MinBoardWidth = 10;
-        private const int MinBoardHeight = 10;
-        private const int MaxBoardWidth = 30;
-        private const int MaxBoardHeight = 30;
-        
-        private Menu Menu { get; set; } = new Menu();
-        private MenuItem SetSizeItem { get; set; }
-
-        private int _boardWidth = 10;
-        private int BoardWidth
+        public enum GameState
         {
-            get => _boardWidth;
-            set => _boardWidth = Math.Clamp(value, MinBoardWidth, MaxBoardWidth);
+            Menu,
+            Game
         }
 
-        private int _boardHeight = 10;
+        public const int MinBoardWidth = 10;
+        public const int MinBoardHeight = 10;
+        public const int MaxBoardWidth = 30;
+        public const int MaxBoardHeight = 30;
 
-        public int BoardHeight
+        private static Game? _instance = null;
+
+        public static Game GetInstance()
         {
-            get => _boardHeight;
-            set => _boardHeight = Math.Clamp(value, MinBoardHeight, MaxBoardHeight);
+            return _instance ??= new Game();
         }
 
-        public Game()
+        public bool IsRunning { get; set; } = true;
+
+        private Stack<BaseState> GameStates { get; set; } = new Stack<BaseState>();
+
+        private Game()
         {
-            Menu.AddMenuItem(new MenuItem("Start Game", "Starts game", onSelectedCallback: StartGame));
-            Menu.AddMenuItem(new MenuItem("Save game", "Save game to json", onSelectedCallback: SaveGame));
-            SetSizeItem = new MenuItem("Set board size", "Set width and height of the board");
-            SetSizeItem.AddChildItem(new MenuItem("Set width", "Sets the width of board", onSelectedCallback: SetBoardWidth));
-            SetSizeItem.AddChildItem(new MenuItem("Set height", "Sets height of board", onSelectedCallback: SetBoardHeight));
-            Menu.AddMenuItem(SetSizeItem);
-            Menu.AddMenuItem(new MenuItem("Exit", "Exit the application", onSelectedCallback: Exit));
+            GameStates.Push(new MenuState());
         }
 
         public void Run()
         {
-            Menu.Run();   
-        }
-
-        private void StartGame()
-        {
-            
-        }
-
-        private void SaveGame()
-        {
-            
-        }
-
-        private void SetBoardWidth()
-        {
-            string input;
-            do
+            while (IsRunning)
             {
-                Console.Write($"Enter board width in range [{MinBoardWidth} - {MaxBoardWidth}]: ");
-                input = Console.ReadLine() ?? "";
-            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-
-            BoardWidth = Convert.ToInt32(input);
-            Menu.RevertSelection(1);
+                GameStates.Peek().Step();
+            }
         }
 
-        private void SetBoardHeight()
+        public void PushState(GameState state)
         {
-            string input;
-            do
+            BaseState? newState = null;
+            switch (state)
             {
-                Console.Write($"Enter board height in range [{MinBoardHeight} - {MaxBoardHeight}]: ");
-                input = Console.ReadLine() ?? "";
-            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
+                case GameState.Menu:
+                    newState = new MenuState();
+                    break;
+                case GameState.Game:
+                    newState = new ConsoleGame.GameState();
+                    break;
+            }
 
-            BoardHeight = Convert.ToInt32(input);
-            Menu.RevertSelection(1);
-        }
-
-        private void Exit()
-        {
-            Menu.Close();
+            GameStates.Push(newState!);
         }
     }
 }
