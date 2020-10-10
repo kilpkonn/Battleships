@@ -12,6 +12,8 @@ namespace Battleships
 
         public bool[][,] Board { get; private set; } = new bool[4][,];
         public bool WhiteToMove { get; private set; } = true;
+        public int Height { get; private set; }
+        public int Width { get; private set; }
 
         public GameBoard(int width, int height)
         {
@@ -19,6 +21,9 @@ namespace Battleships
             {
                 Board[i] = new bool[height, width];
             }
+
+            Height = height;
+            Width = width;
         }
 
         public bool PlaceShip(int y, int x)

@@ -43,7 +43,7 @@ ESC - Exit";
 
         public void Run()
         {
-            WriteBlanks();
+            Util.ConsoleUtil.WriteBlanks();
             while (_isRunning)
             {
                 Render();
@@ -83,20 +83,12 @@ ESC - Exit";
                 _revertLevelCount = 0;
             }
 
-            WriteBlanks();
-        }
-
-        public void WriteBlanks()
-        {
-            for (int i = 0; i < Console.WindowHeight; i++)
-            {
-                Console.WriteLine();
-            }
+            Util.ConsoleUtil.WriteBlanks();
         }
 
         protected void ShowHelp()
         {
-            WriteBlanks();
+            Util.ConsoleUtil.WriteBlanks();
             int helpWidth = HelpText.Split("\n").Max(l => l.Length);
             int helpHeight = HelpText.Split("\n").Length;
             int left = Math.Max(0, (Console.WindowWidth - helpWidth) / 2);
