@@ -7,6 +7,7 @@ namespace ConsoleGame
         public enum GameState
         {
             Menu,
+            Setup,
             Game
         }
 
@@ -46,6 +47,9 @@ namespace ConsoleGame
             {
                 case GameState.Menu:
                     newState = new MenuState();
+                    break;
+                case GameState.Setup:
+                    newState = new SetupState();
                     break;
                 case GameState.Game:
                     newState = new ConsoleGame.GameState();
