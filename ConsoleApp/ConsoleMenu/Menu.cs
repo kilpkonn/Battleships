@@ -8,7 +8,7 @@ namespace ConsoleMenu
         private readonly MenuItem _baseMenuItem = new MenuItem("Root", "Use arrows to move!");
 
         protected MenuItem CurrentMenuItem { get; set; }
-
+        private int _revertLevelCount = 0;
         private int _lineIndex = 0;
         private bool _isRunning = true;
 
@@ -36,7 +36,7 @@ ESC - Exit";
             Console.Clear();
             CurrentMenuItem.HoverChild(_lineIndex);
             _baseMenuItem.Render(0, -1 * (_baseMenuItem.Width + _baseMenuItem.Padding));
-            
+
             Console.SetCursorPosition(0, Console.WindowHeight - 2);
             Console.WriteLine("Use SPACE for help!");
         }
@@ -75,7 +75,14 @@ ESC - Exit";
                     default:
                         break;
                 }
+
+
+                for (int i = 0; i < _revertLevelCount; i++)
+                    CurrentMenuItem = CurrentMenuItem.TrySelectParent(_lineIndex, out _lineIndex);
+
+                _revertLevelCount = 0;
             }
+
             WriteBlanks();
         }
 
@@ -97,11 +104,15 @@ ESC - Exit";
             Console.SetCursorPosition(left, top);
             Console.WriteLine(HelpText);
         }
-        
+
+        public void RevertSelection(int levels = Int32.MaxValue)
+        {
+            _revertLevelCount = levels;
+        }
 
         public void Close()
         {
             _isRunning = false;
         }
     }
-} 
+}

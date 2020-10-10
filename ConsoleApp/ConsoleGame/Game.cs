@@ -65,6 +65,7 @@ namespace ConsoleGame
             } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
 
             BoardWidth = Convert.ToInt32(input);
+            Menu.RevertSelection(1);
         }
 
         private void SetBoardHeight()
@@ -77,6 +78,7 @@ namespace ConsoleGame
             } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
 
             BoardHeight = Convert.ToInt32(input);
+            Menu.RevertSelection(1);
         }
 
         private void Exit()
