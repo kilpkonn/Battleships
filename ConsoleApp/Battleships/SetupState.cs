@@ -24,13 +24,13 @@ namespace Battleships
                 : "Black to move! Press any key to continue...");
 
             Console.ReadKey();
-            
             var layer = _game.GameBoard.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
             do
             {
                 bool choosing = true;
                 while (choosing)
                 {
+                    Util.ConsoleUtil.WriteBlanks();
                     _renderer.Render(_game.GameBoard.Board[(int) layer]);
                     Console.Write("\nPress Q to quit!");
                     var input = Console.ReadKey();
