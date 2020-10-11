@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using BattleshipsBoard;
+using Util;
 
-namespace Battleships.Serializer
+namespace Serializer
 {
     public class JsonGameState
     {
@@ -15,24 +17,22 @@ namespace Battleships.Serializer
         {
         }
 
-        private JsonGameState(Game game)
+        private JsonGameState(GameBoard board)
         {
-            if (game.GameBoard == null) return;
-
             IsInitialized = true;
-            IsSetup = game.GameBoard.IsSetup;
-            WhiteToMove = game.GameBoard.WhiteToMove;
-            Width = game.GameBoard.Width;
-            Height = game.GameBoard.Height;
+            IsSetup = board.IsSetup;
+            WhiteToMove = board.WhiteToMove;
+            Width = board.Width;
+            Height = board.Height;
             for (int i = 0; i < 4; i++)
             {
-                Boards[i.ToString()] = Util.ArrayUtils.ConvertToJagged(game.GameBoard.Board[i]);
+                Boards[i.ToString()] = ArrayUtils.ConvertToJagged(board.Board[i]);
             }
         }
 
-        public static JsonGameState FromGame(Game game)
+        public static JsonGameState FromGame(GameBoard board)
         {
-            return new JsonGameState(game);
+            return new JsonGameState(board);
         }
     }
 }

@@ -1,7 +1,8 @@
 using System.IO;
-using Battleships.Serializer;
-using ConsoleBattleships;
+using BattleshipsBoard;
+using ConsoleBattleshipsUi;
 using ConsoleGame;
+using Serializer;
 
 namespace Battleships
 {
@@ -33,7 +34,8 @@ namespace Battleships
 
         private void SaveGame(string filename)
         {
-            GameJsonSerializer serializer = GameJsonSerializer.FromGame(_game);
+            if (_game.GameBoard == null) return;
+            GameJsonSerializer serializer = GameJsonSerializer.FromGameBoard(_game.GameBoard);
             serializer.SaveToFile(filename);
         }
 

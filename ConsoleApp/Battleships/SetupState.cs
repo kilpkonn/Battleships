@@ -1,65 +1,36 @@
-using System;
+using ConsoleBattleshipsUi;
 using ConsoleGame;
-using Renderer;
 
 namespace Battleships
 {
     public class SetupState : BaseState
     {
         private readonly Game _game;
-        private readonly ConsoleRenderer _renderer = new ConsoleRenderer();
+        private readonly GameSetupUi _ui;
 
-        public SetupState(Game game)
+        public SetupState(Game game, GameSetupUi ui)
         {
+            _ui = ui;
             _game = game;
+
+            _ui.ExitCallback = OnExit;
+            _ui.PlaceShipCallback = PlaceShip;
         }
 
         public void Step()
         {
             if (_game.GameBoard == null) return;
-            Util.ConsoleUtil.WriteBlanks();
-            Console.SetCursorPosition(0, Console.WindowHeight / 2);
-            Console.WriteLine(_game.GameBoard.WhiteToMove
-                ? "White to move! Press any key to continue..."
-                : "Black to move! Press any key to continue...");
+            _ui.Step(_game.GameBoard);
+        }
 
-            Console.ReadKey();
-            var layer = _game.GameBoard.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
-            do
-            {
-                bool choosing = true;
-                while (choosing)
-                {
-                    Util.ConsoleUtil.WriteBlanks();
-                    _renderer.Render(_game.GameBoard.Board[(int) layer]); ;
-                    Console.Write("\nPress Q to quit!");
-                    var input = Console.ReadKey();
-                    switch (input.Key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            _renderer.HighlightY = Math.Max(0, _renderer.HighlightY - 1);
-                            break;
-                        case ConsoleKey.DownArrow:
-                            _renderer.HighlightY = Math.Min(_game.GameBoard.Height - 1, _renderer.HighlightY + 1);
-                            break;
-                        case ConsoleKey.RightArrow:
-                            _renderer.HighlightX = Math.Min(_game.GameBoard.Width - 1, _renderer.HighlightX + 1);
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            _renderer.HighlightX = Math.Max(0, _renderer.HighlightX - 1);
-                            break;
-                        case ConsoleKey.Enter:
-                            choosing = false;
-                            break;
-                        case ConsoleKey.Q:
-                            _game.PopState();
-                            return;
-                    }
-                }
-            } while (!_game.GameBoard.PlaceShip(_renderer.HighlightY, _renderer.HighlightX));
-
-            _renderer.HighlightX = 0;
-            _renderer.HighlightY = 0;
+        public bool PlaceShip(int y, int x)
+        {
+            return _game.GameBoard?.PlaceShip(y, x) ?? false;
+        }
+        
+        public void OnExit()
+        {
+            _game.PopState();
         }
     }
 }

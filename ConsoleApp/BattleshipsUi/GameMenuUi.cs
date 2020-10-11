@@ -1,6 +1,6 @@
 using System;
 
-namespace ConsoleBattleships
+namespace ConsoleBattleshipsUi
 {
     public abstract class GameMenuUi
     {

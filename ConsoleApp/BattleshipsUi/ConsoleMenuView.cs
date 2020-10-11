@@ -2,7 +2,7 @@
 using System.Linq;
 using ConsoleMenu;
 
-namespace ConsoleBattleships
+namespace ConsoleBattleshipsUi
 {
     public class ConsoleMenu : GameMenuUi
     {

@@ -1,6 +1,7 @@
-using Battleships.Serializer;
 
-namespace Battleships
+using Serializer;
+
+namespace BattleshipsBoard
 {
     public class GameBoard
     {

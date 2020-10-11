@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Battleships.Serializer
+namespace Serializer
 {
     public class GameJsonDeserializer
     {
