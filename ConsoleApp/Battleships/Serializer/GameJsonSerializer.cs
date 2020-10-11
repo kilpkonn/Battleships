@@ -7,7 +7,9 @@ namespace Battleships.Serializer
         private readonly Game _game;
         private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
         {
-            WriteIndented = true
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            AllowTrailingCommas = true
         };
         
         private GameJsonSerializer(Game game)

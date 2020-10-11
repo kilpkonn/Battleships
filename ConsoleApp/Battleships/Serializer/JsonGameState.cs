@@ -8,8 +8,8 @@ namespace Battleships.Serializer
         public bool IsSetup { get; } = true;
         public bool WhiteToMove { get; } = true;
         public Dictionary<string, bool[][]> Boards { get; } = new Dictionary<string, bool[][]>();
-        public int Width { get; }
-        public int Height { get; }
+        public int Width { get; private set; }
+        public int Height { get; set; }
 
         public JsonGameState()
         {

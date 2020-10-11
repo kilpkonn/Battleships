@@ -17,14 +17,14 @@ namespace Battleships
         public void Step()
         {
             if (_game.GameBoard == null) return;
-            
+            Util.ConsoleUtil.WriteBlanks();
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
             Console.WriteLine(_game.GameBoard.WhiteToMove
                 ? "White to move! Press any key to continue..."
                 : "Black to move! Press any key to continue...");
 
             Console.ReadKey();
-
+            
             var layer = _game.GameBoard.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
             do
             {
@@ -32,6 +32,7 @@ namespace Battleships
                 while (choosing)
                 {
                     _renderer.Render(_game.GameBoard.Board[(int) layer]);
+                    Console.Write("\nPress Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
                     {
@@ -50,13 +51,15 @@ namespace Battleships
                         case ConsoleKey.Enter:
                             choosing = false;
                             break;
+                        case ConsoleKey.Q:
+                            _game.PushState(Game.GameState.Menu);
+                            return;
                     }
                 }
             } while (!_game.GameBoard.PlaceShip(_renderer.HighlightY, _renderer.HighlightX));
 
             _renderer.HighlightX = 0;
             _renderer.HighlightY = 0;
-            Util.ConsoleUtil.WriteBlanks();
         }
     }
 }

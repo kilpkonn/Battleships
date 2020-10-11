@@ -5,6 +5,14 @@ namespace Battleships.Serializer
     public class GameJsonDeserializer
     {
         private readonly string _jsonStr;
+
+        private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            AllowTrailingCommas = true
+        };
+
         private GameJsonDeserializer(string json)
         {
             _jsonStr = json;
@@ -17,7 +25,7 @@ namespace Battleships.Serializer
 
         public JsonGameState Deserialize()
         {
-            return JsonSerializer.Deserialize<JsonGameState>(_jsonStr);
+            return JsonSerializer.Deserialize<JsonGameState>(_jsonStr, _serializerOptions);
         }
     }
 }
