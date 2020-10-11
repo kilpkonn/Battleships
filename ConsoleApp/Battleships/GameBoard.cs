@@ -1,3 +1,5 @@
+using Battleships.Serializer;
+
 namespace Battleships
 {
     public class GameBoard
@@ -52,6 +54,26 @@ namespace Battleships
                 Board[(int) BoardType.BlackHits][y, x] = true;
                 return Board[(int) BoardType.WhiteShips][y, x];
             }
+        }
+
+        public static GameBoard? FromJsonState(JsonGameState state)
+        {
+            if (!state.IsInitialized)
+            {
+                return null;
+            }
+            GameBoard board = new GameBoard(state.Width, state.Height);
+            board.IsSetup = state.IsSetup;
+            board.WhiteToMove = state.WhiteToMove;
+            for (int i = 0; i < 4; i++)
+            {
+                if (state.Boards.ContainsKey(i.ToString()))
+                {
+                    board.Board[i] = Util.ArrayUtils.ConvertTo2D(state.Boards[i.ToString()]);
+                }
+            }
+
+            return board;
         }
     }
 }

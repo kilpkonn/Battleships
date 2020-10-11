@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Battleships.Serializer;
 using ConsoleGame;
 using ConsoleMenu;
@@ -73,6 +75,7 @@ namespace Battleships
             if (!name.EndsWith(".json")) name += ".json";
             GameJsonSerializer serializer = GameJsonSerializer.FromGame(_game);
             serializer.SaveToFile(name);
+            Menu.RevertSelection(1);
         }
 
         private void LoadGameSelected()
@@ -88,6 +91,18 @@ namespace Battleships
 
         private void LoadGame(string file)
         {
+            string jsonStr = File.ReadAllText(file);
+            var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
+            _game.GameBoard = GameBoard.FromJsonState(jsonState);
+            if (_game.GameBoard == null)
+            {
+                Menu.RevertSelection(2);
+                return;
+            }
+
+            if (_game.GameBoard.IsSetup) _game.PushState(Game.GameState.Setup);
+            else _game.PushState(Game.GameState.Game);
+            Menu.Close();
         }
 
         private void SetBoardWidth()
