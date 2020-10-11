@@ -31,7 +31,7 @@ namespace Battleships
                 while (choosing)
                 {
                     Util.ConsoleUtil.WriteBlanks();
-                    _renderer.Render(_game.GameBoard.Board[(int) layer]);
+                    _renderer.Render(_game.GameBoard.Board[(int) layer]); ;
                     Console.Write("\nPress Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
@@ -52,7 +52,7 @@ namespace Battleships
                             choosing = false;
                             break;
                         case ConsoleKey.Q:
-                            _game.PushState(Game.GameState.Menu);
+                            _game.PopState();
                             return;
                     }
                 }

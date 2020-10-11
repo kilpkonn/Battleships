@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using ConsoleBattleships;
 using ConsoleGame;
+using ConsoleMenu = ConsoleBattleships.ConsoleMenu;
 
 namespace Battleships
 {
@@ -19,6 +21,9 @@ namespace Battleships
 
         private static Game? _instance;
 
+        private GameMenuUi _menuUi =
+            new ConsoleBattleships.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight);
+
         public static Game GetInstance()
         {
             return _instance ??= new Game();
@@ -31,7 +36,7 @@ namespace Battleships
 
         private Game()
         {
-            GameStates.Push(new MenuState(this));
+            GameStates.Push(new MenuState(this, _menuUi));
         }
 
         public void Run()
@@ -48,7 +53,7 @@ namespace Battleships
             switch (state)
             {
                 case GameState.Menu:
-                    newState = new MenuState(this);
+                    newState = new MenuState(this, _menuUi);
                     break;
                 case GameState.Setup:
                     newState = new SetupState(this);
@@ -59,6 +64,13 @@ namespace Battleships
             }
 
             GameStates.Push(newState!);
+        }
+
+        public bool PopState()
+        {
+            if (GameStates.Count == 0) return false;
+            GameStates.Pop();
+            return true;
         }
 
         public void Exit()

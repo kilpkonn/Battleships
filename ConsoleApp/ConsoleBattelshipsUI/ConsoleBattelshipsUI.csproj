@@ -2,12 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>ConsoleBattleships</RootNamespace>
+        <AssemblyName>ConsoleBattleshipsUI</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ConsoleBattelshipsUI\ConsoleBattelshipsUI.csproj" />
       <ProjectReference Include="..\ConsoleMenu\ConsoleMenu.csproj" />
-      <ProjectReference Include="..\Renderer\Renderer.csproj" />
     </ItemGroup>
 
 </Project>

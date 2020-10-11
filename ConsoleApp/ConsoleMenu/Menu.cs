@@ -43,6 +43,7 @@ ESC - Exit";
 
         public void Run()
         {
+            _isRunning = true;
             Util.ConsoleUtil.WriteBlanks();
             while (_isRunning)
             {

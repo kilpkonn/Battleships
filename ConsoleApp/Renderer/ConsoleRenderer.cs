@@ -14,6 +14,9 @@ namespace Renderer
         private const string VerticalBorderSymbol = "|";
         private const ConsoleColor BorderColor = ConsoleColor.Yellow;
         private const ConsoleColor LegendColor = ConsoleColor.DarkCyan;
+        private const ConsoleColor ShipColor = ConsoleColor.Magenta;
+        private const ConsoleColor WaterColor = ConsoleColor.Blue;
+        public static ConsoleColor CrosshairColor { get; } = ConsoleColor.Cyan;
 
         public int HighlightX { get; set; } = 0;
         public int HighlightY { get; set; } = 0;
@@ -34,7 +37,7 @@ namespace Renderer
 
                     if (isSelected)
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.ForegroundColor = board[y, x] ? ShipColor : CrosshairColor;
                         Console.SetCursorPosition((x+ 1) * (CellWidth - 1), (y + 1) * (CellHeight - 1));
                         Console.Write($"+{string.Concat(Enumerable.Repeat("-", CellWidth - 2))}+");
                         for (int i = 1; i < (CellHeight - 1); i++)
@@ -52,6 +55,7 @@ namespace Renderer
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.SetCursorPosition((x + 1) * (CellWidth - 1) + CellWidth / 2, (y + 1) * (CellHeight - 1) + CellHeight / 2);
                         string elem = board[y, x] ? ShipSymbol : EmptySymbol;
+                        Console.ForegroundColor = board[y, x] ? ShipColor : WaterColor;
                         Console.Write(elem);
                         for (int i = 0; i < (CellHeight - 1) / 2; i++)
                         {
@@ -61,6 +65,7 @@ namespace Renderer
                     }
                 }
             }
+            Console.SetCursorPosition(0, (CellHeight - 1) * (2 + board.GetLength(0)));
         }
 
         private void RenderBorder(int width,int height)
