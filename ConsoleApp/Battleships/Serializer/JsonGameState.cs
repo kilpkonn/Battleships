@@ -4,11 +4,11 @@ namespace Battleships.Serializer
 {
     public class JsonGameState
     {
-        public bool IsInitialized { get; } = false;
-        public bool IsSetup { get; } = true;
-        public bool WhiteToMove { get; } = true;
-        public Dictionary<string, bool[][]> Boards { get; } = new Dictionary<string, bool[][]>();
-        public int Width { get; private set; }
+        public bool IsInitialized { get; set; } = false;
+        public bool IsSetup { get; set; } = true;
+        public bool WhiteToMove { get; set; } = true;
+        public Dictionary<string, bool[][]> Boards { get; set; } = new Dictionary<string, bool[][]>();
+        public int Width { get; set; }
         public int Height { get; set; }
 
         public JsonGameState()
