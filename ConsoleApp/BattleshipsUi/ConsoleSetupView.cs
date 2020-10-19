@@ -7,7 +7,7 @@ namespace ConsoleBattleshipsUi
 {
     public class ConsoleSetupView: GameSetupUi
     {
-        private readonly ConsoleRenderer _renderer = new ConsoleRenderer();
+        private readonly ConsoleRenderer _renderer = new ConsoleRenderer(3, 2);
         
          public override void Step(GameBoard board)
         {
@@ -25,7 +25,8 @@ namespace ConsoleBattleshipsUi
                 while (choosing)
                 {
                     ConsoleUtil.WriteBlanks();
-                    _renderer.Render(board.Board[(int) layer]); ;
+                    _renderer.Render(board.Board[(int) layer]);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("\nPress Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
