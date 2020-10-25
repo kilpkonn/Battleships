@@ -9,6 +9,9 @@ namespace ConsoleBattleshipsUi
         public readonly int MinBoardHeight;
         public readonly int MaxBoardWidth;
         public readonly int MaxBoardHeight;
+        
+        protected Configuration Configuration { get; set; }= new Configuration(10, 10);
+
 
         public GameMenuUi(int minBoardWidth, int minBoardHeight, int maxBoardWidth, int maxBoardHeight)
         {
@@ -16,6 +19,18 @@ namespace ConsoleBattleshipsUi
             MinBoardHeight = minBoardHeight;
             MaxBoardWidth = maxBoardWidth;
             MaxBoardHeight = maxBoardHeight;
+        }
+        
+        protected int BoardWidth
+        {
+            get => Configuration.BoardWidth;
+            set => Configuration.BoardWidth = Math.Clamp(value, MinBoardWidth, MaxBoardWidth);
+        }
+
+        protected int BoardHeight
+        {
+            get => Configuration.BoardHeight;
+            set => Configuration.BoardHeight = Math.Clamp(value, MinBoardHeight, MaxBoardHeight);
         }
 
         public Action<Configuration>? StartGameCallback { get; set; }

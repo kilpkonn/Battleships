@@ -12,20 +12,8 @@ namespace ConsoleBattleshipsUi
         private MenuItem BoardWidthItem { get; set; }
         private MenuItem BoardHeightIem { get; set; }
         private MenuItem LoadGameItem { get; set; }
+        private MenuItem TouchModeItem { get; set; }
 
-        private Configuration _configuration = new Configuration(10, 10);
-
-        private int BoardWidth
-        {
-            get => _configuration.BoardWidth;
-            set => _configuration.BoardWidth = Math.Clamp(value, MinBoardWidth, MaxBoardWidth);
-        }
-
-        public int BoardHeight
-        {
-            get => _configuration.BoardHeight;
-            set => _configuration.BoardHeight = Math.Clamp(value, MinBoardHeight, MaxBoardHeight);
-        }
 
         public override void Step()
         {
@@ -48,6 +36,15 @@ namespace ConsoleBattleshipsUi
             SetSizeItem.AddChildItem(BoardWidthItem);
             SetSizeItem.AddChildItem(BoardHeightIem);
             Menu.AddMenuItem(SetSizeItem);
+            TouchModeItem = new MenuItem($"Set touch mode [{Configuration.TouchMode.ToString()}]",
+                "Set whether ships can touch or not");
+            TouchModeItem.AddChildItem(new MenuItem(TouchMode.NoTouch.ToString(), "Boats cannot touch each other",
+                onSelectedCallback: () => SetTouchMode(TouchMode.NoTouch)));
+            TouchModeItem.AddChildItem(new MenuItem(TouchMode.CornersTouch.ToString(), "Boats can touch each other with corners",
+                onSelectedCallback: () => SetTouchMode(TouchMode.CornersTouch)));
+            TouchModeItem.AddChildItem(new MenuItem(TouchMode.AllTouch.ToString(), "Boats can touch each other",
+                onSelectedCallback: () => SetTouchMode(TouchMode.AllTouch)));
+            Menu.AddMenuItem(TouchModeItem);
             Menu.AddMenuItem(new MenuItem("Exit", "Exit the application", onSelectedCallback: Exit));
         }
 
@@ -55,7 +52,7 @@ namespace ConsoleBattleshipsUi
         {
             Menu.RevertSelection(2);
             Menu.Close();
-            StartGameCallback?.Invoke(_configuration);
+            StartGameCallback?.Invoke(Configuration);
         }
 
         private void SaveGame()
@@ -88,6 +85,7 @@ namespace ConsoleBattleshipsUi
             {
                 Menu.RevertSelection(2);
             }
+
             Menu.Close();
         }
 
@@ -123,6 +121,12 @@ namespace ConsoleBattleshipsUi
             BoardHeightIem.Preview = $"Sets height of board. Currently {BoardHeight}";
             BoardHeightIem.Label = $"Set height [{BoardHeight}]";
             Menu.RevertSelection(1);
+        }
+
+        private void SetTouchMode(TouchMode mode)
+        {
+            Configuration.TouchMode = mode;
+            TouchModeItem.Label = $"Set touch mode [{mode.ToString()}]";
         }
 
         private void Exit()
