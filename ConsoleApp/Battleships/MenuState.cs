@@ -26,9 +26,9 @@ namespace Battleships
             _menuUi.Step();
         }
 
-        private void StartGame(int width, int height)
+        private void StartGame(Configuration config)
         {
-            _game.GameBoard = new GameBoard(width, height);
+            _game.GameBoard = new GameBoard(config.BoardWidth, config.BoardHeight);
             _game.PushState(Game.GameState.Setup);
         }
 

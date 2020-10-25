@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleshipsUi", "Battleship
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleshipsBoard", "BattleshipsBoard\BattleshipsBoard.csproj", "{3ACDB6A8-9893-4B49-96DA-A0D09B2C00DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configuration\Configuration.csproj", "{4288568C-FBD5-4EC0-BFF9-5D80030537EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{3ACDB6A8-9893-4B49-96DA-A0D09B2C00DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ACDB6A8-9893-4B49-96DA-A0D09B2C00DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ACDB6A8-9893-4B49-96DA-A0D09B2C00DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BattleshipsBoard\BattleshipsBoard.csproj" />
+      <ProjectReference Include="..\Configuration\Configuration.csproj" />
       <ProjectReference Include="..\ConsoleMenu\ConsoleMenu.csproj" />
       <ProjectReference Include="..\Renderer\Renderer.csproj" />
     </ItemGroup>

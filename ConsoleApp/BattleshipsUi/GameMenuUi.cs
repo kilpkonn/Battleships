@@ -1,4 +1,5 @@
 using System;
+using Battleships;
 
 namespace ConsoleBattleshipsUi
 {
@@ -17,7 +18,7 @@ namespace ConsoleBattleshipsUi
             MaxBoardHeight = maxBoardHeight;
         }
 
-        public Action<int, int>? StartGameCallback { get; set; }
+        public Action<Configuration>? StartGameCallback { get; set; }
         public Action<string>? SaveCallback { get; set; }
         public Action? ExitCallback { get; set; }
         public Func<string, bool>? LoadGameCallback { get; set; }

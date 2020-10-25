@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Battleships;
 using ConsoleMenu;
 
 namespace ConsoleBattleshipsUi
@@ -12,20 +13,18 @@ namespace ConsoleBattleshipsUi
         private MenuItem BoardHeightIem { get; set; }
         private MenuItem LoadGameItem { get; set; }
 
-        private int _boardWidth = 10;
+        private Configuration _configuration = new Configuration(10, 10);
 
         private int BoardWidth
         {
-            get => _boardWidth;
-            set => _boardWidth = Math.Clamp(value, MinBoardWidth, MaxBoardWidth);
+            get => _configuration.BoardWidth;
+            set => _configuration.BoardWidth = Math.Clamp(value, MinBoardWidth, MaxBoardWidth);
         }
-
-        private int _boardHeight = 10;
 
         public int BoardHeight
         {
-            get => _boardHeight;
-            set => _boardHeight = Math.Clamp(value, MinBoardHeight, MaxBoardHeight);
+            get => _configuration.BoardHeight;
+            set => _configuration.BoardHeight = Math.Clamp(value, MinBoardHeight, MaxBoardHeight);
         }
 
         public override void Step()
@@ -56,7 +55,7 @@ namespace ConsoleBattleshipsUi
         {
             Menu.RevertSelection(2);
             Menu.Close();
-            StartGameCallback?.Invoke(_boardWidth, _boardHeight);
+            StartGameCallback?.Invoke(_configuration);
         }
 
         private void SaveGame()
