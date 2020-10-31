@@ -22,7 +22,7 @@ namespace BattleshipsBoard
         public int Width { get; }
         public ImmutableDictionary<int, int> ShipCounts { get; }
         public TouchMode TouchMode { get; }
-        private static int _shipId = 1;
+        private int _shipId = 1;
 
         public bool IsSetup { get; private set; } = true;
 
@@ -41,7 +41,31 @@ namespace BattleshipsBoard
             TouchMode = touchMode;
         }
 
+        public bool IsSetupComplete()
+        {
+            Dictionary<int, int> whiteShips = CountShips(Board[(int) BoardType.WhiteShips]);
+            Dictionary<int, int> blackShips = CountShips(Board[(int) BoardType.BlackShips]);
+
+            var white = whiteShips.Values
+                .GroupBy(s => s)
+                .ToDictionary(s => s.Key, s => s.Count());
+            var black = blackShips.Values
+                .GroupBy(s => s)
+                .ToDictionary(s => s.Key, s => s.Count());
+
+            return ShipCounts
+                .All(c => white.GetValueOrDefault(c.Key, 0) == c.Value &&
+                          black.GetValueOrDefault(c.Key, 0) == c.Value);
+        }
+
         public int CountShipsWithSize(int[,] board, int size)
+        {
+            var shipLengths = CountShips(board);
+
+            return shipLengths.Values.Count(v => v == size);
+        }
+
+        private Dictionary<int, int> CountShips(int[,] board)
         {
             Dictionary<int, int> shipLengths = new Dictionary<int, int>();
             for (int y = 0; y < Height; y++)
@@ -55,7 +79,7 @@ namespace BattleshipsBoard
                 }
             }
 
-            return shipLengths.Values.Count(v => v == size);
+            return shipLengths;
         }
 
         public bool PlaceShip(int y, int x, int length, bool horizontal)

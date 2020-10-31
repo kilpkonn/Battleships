@@ -20,6 +20,11 @@ namespace Battleships
         public void Step()
         {
             if (_game.GameBoard == null) return;
+            if (_game.GameBoard.IsSetupComplete())
+            {
+                _game.PushState(Game.GameState.Game);
+                return;
+            }
             _ui.Step(_game.GameBoard);
         }
 
