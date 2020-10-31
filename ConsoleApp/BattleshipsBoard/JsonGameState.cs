@@ -10,7 +10,7 @@ namespace BattleshipsBoard
         public bool IsInitialized { get; set; } = false;
         public bool IsSetup { get; set; } = true;
         public bool WhiteToMove { get; set; } = true;
-        public Dictionary<string, bool[][]> Boards { get; set; } = new Dictionary<string, bool[][]>();
+        public Dictionary<string, int[][]> Boards { get; set; } = new Dictionary<string, int[][]>();
         public Dictionary<string, int> ShipCounts { get; set; } = new Dictionary<string, int>();
         public TouchMode TouchMode { get; set; }
         public int Width { get; set; }

@@ -28,15 +28,17 @@ namespace Renderer
             _cellHeight = cellHeight;
         }
 
-        public void Render(bool[,] board)
+        public void Render(int[,] board, int length, bool horizontal)
         {
             RenderBorder(board.GetLength(1), board.GetLength(0));
             for (int y = 0; y < board.GetLength(0); y++)
             {
                 for (int x = 0; x < board.GetLength(1); x++)
                 {
-                    bool isSelected = y == HighlightY && x == HighlightX;
-
+                    bool isSelected = horizontal
+                        ? y == HighlightY && x >= HighlightX && x < HighlightX + length
+                        : x == HighlightX && y >= HighlightY && y < HighlightY + length;
+                    
                     if (isSelected)
                     {
                         RenderSelectedCell(board, y, x);
@@ -46,8 +48,8 @@ namespace Renderer
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.SetCursorPosition((x + 1) * (_cellWidth - 1) + _cellWidth / 2,
                             (y + 1) * (_cellHeight - 1) + _cellHeight / 2);
-                        string elem = board[y, x] ? ShipSymbol : EmptySymbol;
-                        Console.ForegroundColor = board[y, x] ? ShipColor : WaterColor;
+                        string elem = board[y, x] != 0 ? ShipSymbol : EmptySymbol;
+                        Console.ForegroundColor = board[y, x] != 0 ? ShipColor : WaterColor;
                         Console.Write(elem);
                         for (int i = 0; i < (_cellHeight - 1) / 2; i++)
                         {
@@ -69,9 +71,9 @@ namespace Renderer
             }
         }
 
-        private  void RenderSelectedCell(bool[,] board, int y, int x)
+        private void RenderSelectedCell(int[,] board, int y, int x)
         {
-            Console.ForegroundColor = board[y, x] ? ShipColor : CrosshairColor;
+            Console.ForegroundColor = board[y, x] != 0 ? ShipColor : CrosshairColor;
             if (_cellWidth == 3)
             {
                 Console.SetCursorPosition((x + 1) * (_cellWidth - 1) + 1, (y + 1) * (_cellHeight - 1) + 1);
@@ -85,7 +87,7 @@ namespace Renderer
             for (int i = 1; i < (_cellHeight - 1); i++)
             {
                 Console.SetCursorPosition((x + 1) * (_cellWidth - 1), (y + 1) * (_cellHeight - 1) + i);
-                string elem = board[y, x] ? ShipSymbol : EmptySymbol;
+                string elem = board[y, x] != 0 ? ShipSymbol : EmptySymbol;
                 string padding = string.Concat(Enumerable.Repeat(" ", _cellWidth / 2 - 1));
                 Console.Write($"|{padding}{elem}{padding}|");
             }
@@ -137,7 +139,8 @@ namespace Renderer
                 Console.SetCursorPosition((i + 1) * (_cellWidth - 1), _cellHeight / 2);
                 Console.Write(string.Concat(Enumerable.Repeat(HorizontalBorderSymbol, _cellWidth)));
                 // Bottom
-                Console.SetCursorPosition((i + 1) * (_cellWidth - 1), (height + 1) * (_cellHeight - 1) + _cellHeight / 2);
+                Console.SetCursorPosition((i + 1) * (_cellWidth - 1),
+                    (height + 1) * (_cellHeight - 1) + _cellHeight / 2);
                 Console.Write(string.Concat(Enumerable.Repeat(HorizontalBorderSymbol, _cellWidth)));
             }
         }

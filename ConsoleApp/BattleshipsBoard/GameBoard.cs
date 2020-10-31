@@ -16,12 +16,13 @@ namespace BattleshipsBoard
             BlackHits = 3
         }
 
-        public bool[][,] Board { get; } = new bool[4][,];
+        public int[][,] Board { get; } = new int[4][,];
         public bool WhiteToMove { get; private set; } = true;
         public int Height { get; }
         public int Width { get; }
         public ImmutableDictionary<int, int> ShipCounts { get; }
-        public TouchMode TouchMode { get;  } 
+        public TouchMode TouchMode { get; }
+        private static int _shipId = 1;
 
         public bool IsSetup { get; private set; } = true;
 
@@ -29,7 +30,7 @@ namespace BattleshipsBoard
         {
             for (int i = 0; i < 4; i++)
             {
-                Board[i] = new bool[height, width];
+                Board[i] = new int[height, width];
             }
 
             Height = height;
@@ -40,29 +41,99 @@ namespace BattleshipsBoard
             TouchMode = touchMode;
         }
 
-        public bool PlaceShip(int y, int x)
+        public int CountShipsWithSize(int[,] board, int size)
         {
-            if (WhiteToMove && !Board[(int) BoardType.WhiteShips][y, x])
-                Board[(int) BoardType.WhiteShips][y, x] = true;
-            else if (!WhiteToMove && !Board[(int) BoardType.BlackShips][y, x])
-                Board[(int) BoardType.BlackShips][y, x] = true;
-            else return false;
+            Dictionary<int, int> shipLengths = new Dictionary<int, int>();
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    if (board[y, x] != 0)
+                    {
+                        shipLengths[board[y, x]] = shipLengths.GetValueOrDefault(board[y, x], 0) + 1;
+                    }
+                }
+            }
+
+            return shipLengths.Values.Count(v => v == size);
+        }
+
+        public bool PlaceShip(int y, int x, int length, bool horizontal)
+        {
+            if (WhiteToMove && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, horizontal, TouchMode))
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    Board[(int) BoardType.WhiteShips][y + (!horizontal ? i : 0), x + (horizontal ? i : 0)] = _shipId;
+                }
+            }
+            else if (!WhiteToMove && IsFree(Board[(int) BoardType.BlackShips], y, x, length, horizontal, TouchMode))
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    Board[(int) BoardType.BlackShips][y + (!horizontal ? i : 0), x + (horizontal ? i : 0)] = _shipId;
+                }
+            }
+            else
+            {
+                return false;
+            }
 
             WhiteToMove = !WhiteToMove;
+            _shipId++;
             return true;
+        }
+
+        private static bool IsFree(int[,] board, int y, int x, int length, bool horizontal,
+            TouchMode touchMode = TouchMode.AllTouch)
+        {
+            bool isFree = true;
+            for (int i = 0; i < length; i++)
+            {
+                switch (touchMode)
+                {
+                    case TouchMode.AllTouch:
+                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0)] == 0;
+                        break;
+                    case TouchMode.CornersTouch:
+                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0)] == 0;
+                        isFree &= board[y + (!horizontal ? i : 0) + 1, x + (horizontal ? i : 0)] == 0;
+                        isFree &= board[y + (!horizontal ? i : 0) - 1, x + (horizontal ? i : 0)] == 0;
+                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) + 1] == 0;
+                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) - 1] == 0;
+                        break;
+                    case TouchMode.NoTouch:
+                        for (int j = -1; j < 2; j++)
+                        {
+                            for (int k = -1; k < 2; k++)
+                            {
+                                if (y + (!horizontal ? i : 0) + j >= 0 && x + (horizontal ? i : 0) + k >= 0 &&
+                                    x + (horizontal ? i : 0) + k < board.GetLength(1) &&
+                                    y + (!horizontal ? i : 0) + j < board.GetLength(0))
+                                {
+                                    isFree &= board[y + (!horizontal ? i : 0) + j, x + (horizontal ? i : 0) + k] == 0;
+                                }
+                            }
+                        }
+
+                        break;
+                }
+            }
+
+            return isFree;
         }
 
         public bool PlaceBomb(int y, int x)
         {
             if (WhiteToMove)
             {
-                Board[(int) BoardType.WhiteHits][y, x] = true;
-                return Board[(int) BoardType.BlackShips][y, x];
+                Board[(int) BoardType.WhiteHits][y, x] = 1;
+                return Board[(int) BoardType.BlackShips][y, x] != 0;
             }
             else
             {
-                Board[(int) BoardType.BlackHits][y, x] = true;
-                return Board[(int) BoardType.WhiteShips][y, x];
+                Board[(int) BoardType.BlackHits][y, x] = 1;
+                return Board[(int) BoardType.WhiteShips][y, x] != 0;
             }
         }
 
@@ -72,6 +143,7 @@ namespace BattleshipsBoard
             {
                 return null;
             }
+
             var shipSizes = state.ShipCounts.ToDictionary(
                 e => Convert.ToInt32(e.Key),
                 e => e.Value);

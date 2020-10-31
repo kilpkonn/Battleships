@@ -23,9 +23,9 @@ namespace Battleships
             _ui.Step(_game.GameBoard);
         }
 
-        public bool PlaceShip(int y, int x)
+        public bool PlaceShip(int y, int x, int length, bool horizontal)
         {
-            return _game.GameBoard?.PlaceShip(y, x) ?? false;
+            return _game.GameBoard?.PlaceShip(y, x, length, horizontal) ?? false;
         }
         
         public void OnExit()
