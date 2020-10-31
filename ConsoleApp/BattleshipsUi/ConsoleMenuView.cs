@@ -41,7 +41,8 @@ namespace ConsoleBattleshipsUi
                 "Set whether ships can touch or not");
             TouchModeItem.AddChildItem(new MenuItem(TouchMode.NoTouch.ToString(), "Boats cannot touch each other",
                 onSelectedCallback: () => SetTouchMode(TouchMode.NoTouch)));
-            TouchModeItem.AddChildItem(new MenuItem(TouchMode.CornersTouch.ToString(), "Boats can touch each other with corners",
+            TouchModeItem.AddChildItem(new MenuItem(TouchMode.CornersTouch.ToString(),
+                "Boats can touch each other with corners",
                 onSelectedCallback: () => SetTouchMode(TouchMode.CornersTouch)));
             TouchModeItem.AddChildItem(new MenuItem(TouchMode.AllTouch.ToString(), "Boats can touch each other",
                 onSelectedCallback: () => SetTouchMode(TouchMode.AllTouch)));
@@ -69,6 +70,11 @@ namespace ConsoleBattleshipsUi
                         $"Set amount of ships with length of {shipSize}. Currently {count}",
                         onSelectedCallback: () => SetShipCount(shipSize)));
             }
+
+            ShipCountItem.AddChildItem(
+                new MenuItem("Add new ship size",
+                    "Add ship with custom length",
+                    onSelectedCallback: AddNewShipSize));
         }
 
         private void SaveGame()
@@ -105,30 +111,38 @@ namespace ConsoleBattleshipsUi
             Menu.Close();
         }
 
+        private void AddNewShipSize()
+        {
+            int newLength = -1;
+            while (newLength <= 0 || Configuration.ShipCounts.ContainsKey(newLength))
+            {
+                newLength = AskNumericInput("Enter custom ship length: ");
+                if (Configuration.ShipCounts.ContainsKey(newLength))
+                    Console.WriteLine($"You already have size {newLength}");
+            }
+
+            int newAmount = -1;
+            while (newAmount <= 0)
+            {
+                newAmount = AskNumericInput($"Enter amount of ships you wish to be in length {newLength}: ");
+            }
+
+            Configuration.ShipCounts[newLength] = newAmount;
+            Menu.RevertSelection(1);
+        }
+
         private void SetShipCount(int shipSize)
         {
-            string input;
-            do
-            {
-                Console.Write($"Enter amount of ships you want to be with length {shipSize}: ");
-                input = Console.ReadLine() ?? "";
-            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-
-            Configuration.ShipCounts[shipSize] = Convert.ToInt32(input);
+            Configuration.ShipCounts[shipSize] =
+                AskNumericInput($"Enter amount of ships you want to be with length {shipSize}: ");
             GenerateShipCounts();
+            Menu.RecalculateSpacings();
             Menu.RevertSelection(1);
         }
 
         private void SetBoardWidth()
         {
-            string input;
-            do
-            {
-                Console.Write($"Enter board width in range [{MinBoardWidth} - {MaxBoardWidth}]: ");
-                input = Console.ReadLine() ?? "";
-            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-
-            BoardWidth = Convert.ToInt32(input);
+            BoardWidth = AskNumericInput($"Enter board width in range [{MinBoardWidth} - {MaxBoardWidth}]: ");
             SetSizeItem.Preview = $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}";
             SetSizeItem.Label = $"Set board size [{BoardWidth} x {BoardHeight}]";
             BoardWidthItem.Preview = $"Sets the width of board. Currently {BoardWidth}";
@@ -138,14 +152,7 @@ namespace ConsoleBattleshipsUi
 
         private void SetBoardHeight()
         {
-            string input;
-            do
-            {
-                Console.Write($"Enter board height in range [{MinBoardHeight} - {MaxBoardHeight}]: ");
-                input = Console.ReadLine() ?? "";
-            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
-
-            BoardHeight = Convert.ToInt32(input);
+            BoardHeight = AskNumericInput($"Enter board height in range [{MinBoardHeight} - {MaxBoardHeight}]: ");
             SetSizeItem.Preview = $"Set width and height of the board. Currently {BoardWidth} x {BoardHeight}";
             SetSizeItem.Label = $"Set board size [{BoardWidth} x {BoardHeight}]";
             BoardHeightIem.Preview = $"Sets height of board. Currently {BoardHeight}";
@@ -157,12 +164,26 @@ namespace ConsoleBattleshipsUi
         {
             Configuration.TouchMode = mode;
             TouchModeItem.Label = $"Set touch mode [{mode.ToString()}]";
+            Menu.RecalculateSpacings();
+            Menu.RevertSelection(1);
         }
 
         private void Exit()
         {
             Menu.Close();
             ExitCallback?.Invoke();
+        }
+
+        private static int AskNumericInput(string question)
+        {
+            string input;
+            do
+            {
+                Console.Write(question);
+                input = Console.ReadLine() ?? "";
+            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
+
+            return Convert.ToInt32(input);
         }
     }
 }

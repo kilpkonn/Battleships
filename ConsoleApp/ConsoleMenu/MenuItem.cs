@@ -43,7 +43,17 @@ namespace ConsoleMenu
         {
             item.Parent = this;
             _childItems.Add(item);
-            _childItems.ForEach(c => c.Width = _childItems.Max(i => i.Width));
+            RecalculateWidth();
+        }
+
+        public void RecalculateWidth()
+        {
+            Width = Label.Length;
+            _childItems.ForEach(c =>
+            {
+                c.RecalculateWidth();
+                c.Width = _childItems.Max(i => i.Width);
+            });
         }
 
         public void ClearChildItems()

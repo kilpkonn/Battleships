@@ -31,6 +31,11 @@ ESC - Exit";
             _baseMenuItem.AddChildItem(item);
         }
 
+        public void RecalculateSpacings()
+        {
+            _baseMenuItem.RecalculateWidth();
+        }
+
         public void Render()
         {
             Console.Clear();
