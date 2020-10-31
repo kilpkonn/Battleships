@@ -13,6 +13,7 @@ namespace ConsoleBattleshipsUi
         private MenuItem BoardHeightIem { get; set; }
         private MenuItem LoadGameItem { get; set; }
         private MenuItem TouchModeItem { get; set; }
+        private MenuItem ShipCountItem { get; set; }
 
 
         public override void Step()
@@ -45,6 +46,9 @@ namespace ConsoleBattleshipsUi
             TouchModeItem.AddChildItem(new MenuItem(TouchMode.AllTouch.ToString(), "Boats can touch each other",
                 onSelectedCallback: () => SetTouchMode(TouchMode.AllTouch)));
             Menu.AddMenuItem(TouchModeItem);
+            ShipCountItem = new MenuItem("Set ship counts", "Set amount of each ship for game");
+            ShipCountItem.OnHoverCallback = GenerateShipCounts;
+            Menu.AddMenuItem(ShipCountItem);
             Menu.AddMenuItem(new MenuItem("Exit", "Exit the application", onSelectedCallback: Exit));
         }
 
@@ -53,6 +57,18 @@ namespace ConsoleBattleshipsUi
             Menu.RevertSelection(2);
             Menu.Close();
             StartGameCallback?.Invoke(Configuration);
+        }
+
+        private void GenerateShipCounts()
+        {
+            ShipCountItem.ClearChildItems();
+            foreach (var (shipSize, count) in Configuration.ShipCounts)
+            {
+                ShipCountItem.AddChildItem(
+                    new MenuItem($"Ships with {shipSize} lenght [{count}]",
+                        $"Set amount of ships with length of {shipSize}. Currently {count}",
+                        onSelectedCallback: () => SetShipCount(shipSize)));
+            }
         }
 
         private void SaveGame()
@@ -87,6 +103,20 @@ namespace ConsoleBattleshipsUi
             }
 
             Menu.Close();
+        }
+
+        private void SetShipCount(int shipSize)
+        {
+            string input;
+            do
+            {
+                Console.Write($"Enter amount of ships you want to be with length {shipSize}: ");
+                input = Console.ReadLine() ?? "";
+            } while (string.IsNullOrEmpty(input) || !input.All(Char.IsDigit));
+
+            Configuration.ShipCounts[shipSize] = Convert.ToInt32(input);
+            GenerateShipCounts();
+            Menu.RevertSelection(1);
         }
 
         private void SetBoardWidth()

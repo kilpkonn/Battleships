@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using BattleshipsBoard;
+using System.Linq;
+using Battleships;
 using Util;
 
-namespace Serializer
+namespace BattleshipsBoard
 {
     public class JsonGameState
     {
@@ -10,6 +11,8 @@ namespace Serializer
         public bool IsSetup { get; set; } = true;
         public bool WhiteToMove { get; set; } = true;
         public Dictionary<string, bool[][]> Boards { get; set; } = new Dictionary<string, bool[][]>();
+        public Dictionary<string, int> ShipCounts { get; set; } = new Dictionary<string, int>();
+        public TouchMode TouchMode { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
@@ -28,6 +31,11 @@ namespace Serializer
             {
                 Boards[i.ToString()] = ArrayUtils.ConvertToJagged(board.Board[i]);
             }
+
+            ShipCounts = board.ShipCounts.ToDictionary(
+                e => e.Key.ToString(),
+                e => e.Value);
+            TouchMode = board.TouchMode;
         }
 
         public static JsonGameState FromGame(GameBoard board)

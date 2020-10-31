@@ -1,5 +1,8 @@
-
-using Serializer;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Battleships;
 
 namespace BattleshipsBoard
 {
@@ -17,10 +20,12 @@ namespace BattleshipsBoard
         public bool WhiteToMove { get; private set; } = true;
         public int Height { get; }
         public int Width { get; }
+        public ImmutableDictionary<int, int> ShipCounts { get; }
+        public TouchMode TouchMode { get;  } 
 
         public bool IsSetup { get; private set; } = true;
 
-        public GameBoard(int width, int height)
+        public GameBoard(int width, int height, Dictionary<int, int> shipCounts, TouchMode touchMode)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -29,6 +34,10 @@ namespace BattleshipsBoard
 
             Height = height;
             Width = width;
+            ShipCounts = shipCounts.ToImmutableDictionary(
+                e => e.Key,
+                e => e.Value);
+            TouchMode = touchMode;
         }
 
         public bool PlaceShip(int y, int x)
@@ -63,7 +72,11 @@ namespace BattleshipsBoard
             {
                 return null;
             }
-            GameBoard board = new GameBoard(state.Width, state.Height);
+            var shipSizes = state.ShipCounts.ToDictionary(
+                e => Convert.ToInt32(e.Key),
+                e => e.Value);
+
+            GameBoard board = new GameBoard(state.Width, state.Height, shipSizes, state.TouchMode);
             board.IsSetup = state.IsSetup;
             board.WhiteToMove = state.WhiteToMove;
             for (int i = 0; i < 4; i++)

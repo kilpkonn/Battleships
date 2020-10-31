@@ -1,8 +1,7 @@
 using System.IO;
 using System.Text.Json;
-using BattleshipsBoard;
 
-namespace Serializer
+namespace BattleshipsBoard
 {
     public class GameJsonSerializer
     {

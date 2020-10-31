@@ -2,7 +2,6 @@ using System.IO;
 using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
-using Serializer;
 
 namespace Battleships
 {
@@ -26,9 +25,9 @@ namespace Battleships
             _menuUi.Step();
         }
 
-        private void StartGame(Configuration config)
+        private void StartGame(Configuration.Configuration config)
         {
-            _game.GameBoard = new GameBoard(config.BoardWidth, config.BoardHeight);
+            _game.GameBoard = new GameBoard(config.BoardWidth, config.BoardHeight, config.ShipCounts, config.TouchMode);
             _game.PushState(Game.GameState.Setup);
         }
 
