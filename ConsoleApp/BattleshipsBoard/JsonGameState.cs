@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Battleships;
+using Configuration;
 using Util;
 
 namespace BattleshipsBoard

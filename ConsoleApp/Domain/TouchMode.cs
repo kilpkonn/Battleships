@@ -1,4 +1,4 @@
-namespace Configuration
+namespace Domain
 {
     public enum TouchMode
     {

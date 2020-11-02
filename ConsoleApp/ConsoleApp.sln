@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleshipsBoard", "Battles
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configuration\Configuration.csproj", "{4288568C-FBD5-4EC0-BFF9-5D80030537EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{CAD1C825-093B-46D6-A067-63454C00F443}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4288568C-FBD5-4EC0-BFF9-5D80030537EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAD1C825-093B-46D6-A067-63454C00F443}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD1C825-093B-46D6-A067-63454C00F443}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD1C825-093B-46D6-A067-63454C00F443}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD1C825-093B-46D6-A067-63454C00F443}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

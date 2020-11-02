@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Battleships;
+using Configuration;
 using ConsoleMenu;
 
 namespace ConsoleBattleshipsUi
