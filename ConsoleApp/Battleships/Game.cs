@@ -21,10 +21,11 @@ namespace Battleships
 
         private static Game? _instance;
 
-        private GameMenuUi _menuUi =
+        private readonly GameMenuUi _menuUi =
             new ConsoleBattleshipsUi.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight);
-        private GameSetupUi _setupUi =
+        private readonly GameSetupUi _setupUi =
             new ConsoleSetupView();
+        private readonly GamePlayUi _playUi = new ConsolePlayView();
 
         public static Game GetInstance()
         {
@@ -61,7 +62,7 @@ namespace Battleships
                     newState = new SetupState(this, _setupUi);
                     break;
                 case GameState.Game:
-                    newState = new Battleships.GameState();
+                    newState = new Battleships.GameState(this, _playUi);
                     break;
             }
 

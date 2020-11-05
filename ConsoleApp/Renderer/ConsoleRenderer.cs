@@ -28,7 +28,7 @@ namespace Renderer
             _cellHeight = cellHeight;
         }
 
-        public void Render(int[,] board, int length, bool horizontal)
+        public void RenderShips(int[,] board, int length, bool horizontal)
         {
             RenderBorder(board.GetLength(1), board.GetLength(0));
             for (int y = 0; y < board.GetLength(0); y++)
@@ -38,6 +38,48 @@ namespace Renderer
                     bool isSelected = horizontal
                         ? y == HighlightY && x >= HighlightX && x < HighlightX + length
                         : x == HighlightX && y >= HighlightY && y < HighlightY + length;
+                    
+                    if (isSelected)
+                    {
+                        RenderSelectedCell(board, y, x);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.SetCursorPosition((x + 1) * (_cellWidth - 1) + _cellWidth / 2,
+                            (y + 1) * (_cellHeight - 1) + _cellHeight / 2);
+                        string elem = board[y, x] != 0 ? ShipSymbol : EmptySymbol;
+                        Console.ForegroundColor = board[y, x] != 0 ? ShipColor : WaterColor;
+                        Console.Write(elem);
+                        for (int i = 0; i < (_cellHeight - 1) / 2; i++)
+                        {
+                            Console.SetCursorPosition((x + 1) * (_cellWidth - 1) + 1,
+                                (y + 1) * (_cellHeight - 1) + _cellHeight / 2 + i + 1);
+                            Console.Write(string.Concat(Enumerable.Repeat(" ", _cellWidth - 2)));
+                        }
+                    }
+                }
+            }
+
+            if (_cellHeight == 2)
+            {
+                Console.SetCursorPosition(0, (_cellHeight - 1) * (2 + board.GetLength(0)) + 1);
+            }
+            else
+            {
+                Console.SetCursorPosition(0, (_cellHeight - 1) * (2 + board.GetLength(0)));
+            }
+        }
+
+        public void RenderHits(int[,] board)
+        {
+            RenderBorder(board.GetLength(1), board.GetLength(0));
+            
+            for (int y = 0; y < board.GetLength(0); y++)
+            {
+                for (int x = 0; x < board.GetLength(1); x++)
+                {
+                    bool isSelected = y == HighlightY && x == HighlightX;
                     
                     if (isSelected)
                     {

@@ -108,6 +108,32 @@ namespace BattleshipsBoard
             return true;
         }
 
+        public bool? DropBomb(int y, int x)
+        {
+            if (WhiteToMove)
+            {
+                if (Board[(int) BoardType.WhiteHits][y, x] != 0)
+                {
+                    return null;
+                }
+
+                Board[(int) BoardType.WhiteHits][y, x] = 1;
+                WhiteToMove = !WhiteToMove; // TODO: Change depending on hit or nah..
+                return Board[(int) BoardType.BlackShips][y, x] != 0;
+            }
+            else
+            {
+                if (Board[(int) BoardType.BlackHits][y, x] != 0)
+                {
+                    return null;
+                }
+
+                Board[(int) BoardType.BlackHits][y, x] = 1;
+                WhiteToMove = !WhiteToMove;
+                return Board[(int) BoardType.WhiteShips][y, x] != 0;
+            }
+        }
+
         private static bool IsFree(int[,] board, int y, int x, int length, bool horizontal,
             TouchMode touchMode = TouchMode.AllTouch)
         {
