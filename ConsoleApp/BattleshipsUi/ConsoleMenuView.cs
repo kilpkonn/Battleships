@@ -14,6 +14,7 @@ namespace ConsoleBattleshipsUi
         private MenuItem LoadGameItem { get; set; }
         private MenuItem TouchModeItem { get; set; }
         private MenuItem ShipCountItem { get; set; }
+        private MenuItem BackToBackMovesOnHitItem { get; set; }
 
 
         public override void Step()
@@ -50,7 +51,12 @@ namespace ConsoleBattleshipsUi
             ShipCountItem = new MenuItem("Set ship counts", "Set amount of each ship for game");
             ShipCountItem.OnHoverCallback = GenerateShipCounts;
             Menu.AddMenuItem(ShipCountItem);
+            BackToBackMovesOnHitItem =
+                new MenuItem($"Toggle new move on hit [{(Configuration.BackToBackMovesOnHit ? "YES" : "NO")}]",
+                    "Toggle if you get new move upon hitting enemy ship", onSelectedCallback: OnToggleBackToBackMoves);
+            Menu.AddMenuItem(BackToBackMovesOnHitItem);
             Menu.AddMenuItem(new MenuItem("Exit", "Exit the application", onSelectedCallback: Exit));
+            Menu.RecalculateSpacings();
         }
 
         private void StartGame()
@@ -58,6 +64,15 @@ namespace ConsoleBattleshipsUi
             Menu.RevertSelection(2);
             Menu.Close();
             StartGameCallback?.Invoke(Configuration);
+        }
+        
+        private void OnToggleBackToBackMoves()
+        {
+            Configuration.BackToBackMovesOnHit = !Configuration.BackToBackMovesOnHit;
+            BackToBackMovesOnHitItem.Label =
+                $"Toggle new move on hit [{(Configuration.BackToBackMovesOnHit ? "YES" : "NO")}]";
+            Menu.RevertSelection(1);
+            Menu.RecalculateSpacings();
         }
 
         private void GenerateShipCounts()
@@ -75,6 +90,7 @@ namespace ConsoleBattleshipsUi
                 new MenuItem("Add new ship size",
                     "Add ship with custom length",
                     onSelectedCallback: AddNewShipSize));
+            Menu.RecalculateSpacings();
         }
 
         private void SaveGame()
