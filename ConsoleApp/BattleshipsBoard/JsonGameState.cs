@@ -13,6 +13,7 @@ namespace BattleshipsBoard
         public Dictionary<string, int[][]> Boards { get; set; } = new Dictionary<string, int[][]>();
         public Dictionary<string, int> ShipCounts { get; set; } = new Dictionary<string, int>();
         public TouchMode TouchMode { get; set; }
+        public bool BackToBackMovesOnHit { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
@@ -36,6 +37,7 @@ namespace BattleshipsBoard
                 e => e.Key.ToString(),
                 e => e.Value);
             TouchMode = board.TouchMode;
+            BackToBackMovesOnHit = board.BackToBackHits;
         }
 
         public static JsonGameState FromGame(GameBoard board)

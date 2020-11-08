@@ -7,7 +7,9 @@ namespace ConsoleBattleshipsUi
     {
         public abstract void Step(GameBoard board);
 
-        public Func<int, int, bool>? DropBombCallback { get; set; }
+        public abstract void GameOver(bool whiteWon);
+
+        public Func<int, int, bool?>? DropBombCallback { get; set; }
         public Action? ExitCallback { get; set; }
     }
 }

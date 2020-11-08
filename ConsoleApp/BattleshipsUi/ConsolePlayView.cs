@@ -54,20 +54,38 @@ namespace ConsoleBattleshipsUi
                     }
                 }
 
-                bool hit = DropBombCallback?.Invoke(_renderer.HighlightY, _renderer.HighlightX) ?? false;
+                bool? hit = DropBombCallback?.Invoke(_renderer.HighlightY, _renderer.HighlightX);
                 ShowHitMiss(hit);
                 
-            } while (whiteToMove == board.WhiteToMove);
+            } while (whiteToMove == board.WhiteToMove && board.GameResult() == null);
 
             _renderer.HighlightX = 0;
             _renderer.HighlightY = 0;
         }
 
-        private void ShowHitMiss(bool isHit)
+        public override void GameOver(bool whiteWon)
         {
             ConsoleUtil.WriteBlanks();
+            Console.SetCursorPosition(6, Console.WindowHeight / 2);
+            if (whiteWon)
+            {
+                Console.WriteLine("WHITE WON!!!");
+            }
+            else
+            {
+                Console.WriteLine("BLACK WON!!!");
+            }
+
+            Console.ReadKey();
+        }
+
+        private void ShowHitMiss(bool? isHit)
+        {
+            if (isHit == null) return;
+            
+            ConsoleUtil.WriteBlanks();
             Console.SetCursorPosition(10, Console.WindowHeight / 2);
-            if (isHit)
+            if ((bool) isHit)
             {
                 Console.WriteLine("HIT!");
             }

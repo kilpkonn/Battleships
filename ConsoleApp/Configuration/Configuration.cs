@@ -7,6 +7,7 @@ namespace Configuration
         public int BoardWidth { get; set; }
         public int BoardHeight { get; set; }
         public TouchMode TouchMode { get; set; } = TouchMode.NoTouch;
+        public bool BackToBackMovesOnHit { get; set; } = true;
 
         public Dictionary<int, int> ShipCounts { get; } = new Dictionary<int, int>
         {

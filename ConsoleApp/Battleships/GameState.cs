@@ -4,7 +4,7 @@ using ConsoleGame;
 
 namespace Battleships
 {
-    public class GameState: BaseState
+    public class GameState : BaseState
     {
         private readonly Game _game;
         private readonly GamePlayUi _ui;
@@ -20,15 +20,24 @@ namespace Battleships
         public void Step()
         {
             if (_game.GameBoard == null) return;
-            
+
+            bool? gameResult = _game.GameBoard.GameResult();
+            if (gameResult != null)
+            {
+                _ui.GameOver((bool) gameResult);
+                _game.PopState();
+                _game.PushState(Game.GameState.Menu);
+                return;
+            }
+
             _ui.Step(_game.GameBoard);
         }
 
-        public bool DropBomb(int y, int x)
+        public bool? DropBomb(int y, int x)
         {
-            return _game.GameBoard?.DropBomb(y, x) ?? false;
+            return _game.GameBoard?.DropBomb(y, x);
         }
-        
+
         public void OnExit()
         {
             _game.PopState();

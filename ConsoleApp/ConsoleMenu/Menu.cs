@@ -83,8 +83,12 @@ ESC - Exit";
                 }
 
 
+                MenuItem lastMenuItem = CurrentMenuItem;
                 for (int i = 0; i < _revertLevelCount; i++)
+                {
                     CurrentMenuItem = CurrentMenuItem.TrySelectParent(_lineIndex, out _lineIndex);
+                    if (CurrentMenuItem == lastMenuItem) break;
+                }
 
                 _revertLevelCount = 0;
             }

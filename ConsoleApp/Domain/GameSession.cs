@@ -11,6 +11,7 @@ namespace Domain
         public string Name { get; set; }
         
         public TouchMode TouchMode { get; set; }
+        public bool BackToBackMovesOnHit { get; set; }
         
         [Range(10, 32)]
         public int BoardWidth { get; set; }

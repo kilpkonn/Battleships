@@ -22,11 +22,13 @@ namespace BattleshipsBoard
         public int Width { get; }
         public ImmutableDictionary<int, int> ShipCounts { get; }
         public TouchMode TouchMode { get; }
+        public bool BackToBackHits { get; set; }
         private int _shipId = 1;
 
         public bool IsSetup { get; private set; } = true;
 
-        public GameBoard(int width, int height, Dictionary<int, int> shipCounts, TouchMode touchMode)
+        public GameBoard(int width, int height, Dictionary<int, int> shipCounts, TouchMode touchMode,
+            bool backToBackHits)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -39,6 +41,7 @@ namespace BattleshipsBoard
                 e => e.Key,
                 e => e.Value);
             TouchMode = touchMode;
+            BackToBackHits = backToBackHits;
         }
 
         public bool IsSetupComplete()
@@ -118,7 +121,7 @@ namespace BattleshipsBoard
                 }
 
                 Board[(int) BoardType.WhiteHits][y, x] = 1;
-                WhiteToMove = !WhiteToMove; // TODO: Change depending on hit or nah..
+                WhiteToMove = BackToBackHits ? Board[(int) BoardType.BlackShips][y, x] != 0 : !WhiteToMove;
                 return Board[(int) BoardType.BlackShips][y, x] != 0;
             }
             else
@@ -129,9 +132,34 @@ namespace BattleshipsBoard
                 }
 
                 Board[(int) BoardType.BlackHits][y, x] = 1;
-                WhiteToMove = !WhiteToMove;
+                WhiteToMove = BackToBackHits ? Board[(int) BoardType.WhiteShips][y, x] == 0 : !WhiteToMove;
                 return Board[(int) BoardType.WhiteShips][y, x] != 0;
             }
+        }
+
+        public bool? GameResult()
+        {
+            bool whiteWon = true;
+            bool blackWon = true;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    if (Board[(int) BoardType.BlackShips][y, x] != 0)
+                    {
+                        whiteWon &= Board[(int) BoardType.WhiteHits][y, x] != 0;
+                    }
+
+                    if (Board[(int) BoardType.WhiteShips][y, x] != 0)
+                    {
+                        blackWon &= Board[(int) BoardType.BlackHits][y, x] != 0;
+                    }
+                }
+            }
+
+            if (!whiteWon && !blackWon) return null;
+            return whiteWon;
         }
 
         private static bool IsFree(int[,] board, int y, int x, int length, bool horizontal,
@@ -173,20 +201,6 @@ namespace BattleshipsBoard
             return isFree;
         }
 
-        public bool PlaceBomb(int y, int x)
-        {
-            if (WhiteToMove)
-            {
-                Board[(int) BoardType.WhiteHits][y, x] = 1;
-                return Board[(int) BoardType.BlackShips][y, x] != 0;
-            }
-            else
-            {
-                Board[(int) BoardType.BlackHits][y, x] = 1;
-                return Board[(int) BoardType.WhiteShips][y, x] != 0;
-            }
-        }
-
         public static GameBoard? FromJsonState(JsonGameState state)
         {
             if (!state.IsInitialized)
@@ -198,7 +212,13 @@ namespace BattleshipsBoard
                 e => Convert.ToInt32(e.Key),
                 e => e.Value);
 
-            GameBoard board = new GameBoard(state.Width, state.Height, shipSizes, state.TouchMode);
+            GameBoard board = new GameBoard(
+                state.Width,
+                state.Height,
+                shipSizes,
+                state.TouchMode,
+                state.BackToBackMovesOnHit
+            );
             board.IsSetup = state.IsSetup;
             board.WhiteToMove = state.WhiteToMove;
             for (int i = 0; i < 4; i++)

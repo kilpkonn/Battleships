@@ -27,7 +27,13 @@ namespace Battleships
 
         private void StartGame(Configuration.Configuration config)
         {
-            _game.GameBoard = new GameBoard(config.BoardWidth, config.BoardHeight, config.ShipCounts, config.TouchMode);
+            _game.GameBoard = new GameBoard(
+                config.BoardWidth,
+                config.BoardHeight,
+                config.ShipCounts,
+                config.TouchMode,
+                config.BackToBackMovesOnHit
+            );
             _game.PushState(Game.GameState.Setup);
         }
 
