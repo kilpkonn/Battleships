@@ -22,6 +22,7 @@ namespace Battleships
             if (_game.GameBoard == null) return;
             if (_game.GameBoard.IsSetupComplete())
             {
+                _game.PopState(); // To allow transition play -> menu
                 _game.PushState(Game.GameState.Game);
                 return;
             }

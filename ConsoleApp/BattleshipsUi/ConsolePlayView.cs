@@ -18,6 +18,7 @@ namespace ConsoleBattleshipsUi
 
             Console.ReadKey();
             var layer = board.WhiteToMove ? GameBoard.BoardType.WhiteHits : GameBoard.BoardType.BlackHits;
+            bool whiteToMove = board.WhiteToMove;
 
             do
             {
@@ -52,10 +53,30 @@ namespace ConsoleBattleshipsUi
                             return;
                     }
                 }
-            } while (!DropBombCallback?.Invoke(_renderer.HighlightY, _renderer.HighlightX) ?? true);
+
+                bool hit = DropBombCallback?.Invoke(_renderer.HighlightY, _renderer.HighlightX) ?? false;
+                ShowHitMiss(hit);
+                
+            } while (whiteToMove == board.WhiteToMove);
 
             _renderer.HighlightX = 0;
             _renderer.HighlightY = 0;
+        }
+
+        private void ShowHitMiss(bool isHit)
+        {
+            ConsoleUtil.WriteBlanks();
+            Console.SetCursorPosition(10, Console.WindowHeight / 2);
+            if (isHit)
+            {
+                Console.WriteLine("HIT!");
+            }
+            else
+            {
+                Console.WriteLine("MISS");
+            }
+
+            Console.ReadKey();
         }
     }
 }
