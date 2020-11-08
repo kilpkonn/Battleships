@@ -5,14 +5,29 @@ namespace DAL
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Boat> Boats { get; set; }
-        public DbSet<GameSession> GameSessions { get; set; }
-        public DbSet<Player> Players { get; set; }
+        public DbSet<Boat> Boats { get; set; } = null!;
+        public DbSet<GameSession> GameSessions { get; set; } = null!;
+        public DbSet<Player> Players { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions options) : base(options)
         {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("TODO");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Player>()
+                .HasMany<GameSession>()
+                .WithOne(x => x.PlayerWhite)
+                .HasForeignKey(x => x.PlayerWhiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Player>()
+                .HasMany<GameSession>()
+                .WithOne(x => x.PlayerBlack)
+                .HasForeignKey(x => x.PlayerBlackId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

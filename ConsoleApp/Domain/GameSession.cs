@@ -7,8 +7,8 @@ namespace Domain
     public class GameSession
     {
         public int GameSessionId { get; set; }
-        [MaxLength(64)]
-        public string Name { get; set; }
+        [MaxLength(64)] 
+        public string Name { get; set; } = null!;
         
         public TouchMode TouchMode { get; set; }
         public bool BackToBackMovesOnHit { get; set; }
@@ -20,8 +20,11 @@ namespace Domain
         public int BoardHeight { get; set; }
 
         public ICollection<Boat> Boats { get; set; } = new List<Boat>();
+
+        public int PlayerWhiteId { get; set; }
+        public Player PlayerWhite { get; set; } = null!;
         
-        public Player PlayerWhite { get; set; }
-        public Player PlayerBlack { get; set; }
+        public int PlayerBlackId { get; set; }
+        public Player PlayerBlack { get; set; } = null!;
     }
 }
