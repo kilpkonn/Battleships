@@ -40,6 +40,9 @@ namespace Battleships
         private void SaveGame(string filename)
         {
             if (_game.GameBoard == null) return;
+            
+            // TODO: Save to db
+            
             GameJsonSerializer serializer = GameJsonSerializer.FromGameBoard(_game.GameBoard);
             serializer.SaveToFile(filename);
         }
@@ -49,10 +52,10 @@ namespace Battleships
             string jsonStr = File.ReadAllText(file);
             var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
             _game.GameBoard = GameBoard.FromJsonState(jsonState);
-            if (_game.GameBoard == null)
-            {
-                return false;
-            }
+            
+            // TODO: Load from db
+            
+            if (_game.GameBoard == null) return false;
 
             if (_game.GameBoard.IsSetup) _game.PushState(Game.GameState.Setup);
             else _game.PushState(Game.GameState.Game);

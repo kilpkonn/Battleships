@@ -12,8 +12,7 @@ namespace DAL.Migrations
                 {
                     PlayerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(maxLength: 32, nullable: false),
-                    GameSessionId = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,6 +58,32 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BoardState",
+                columns: table => new
+                {
+                    BoardStateId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GameSessionId = table.Column<int>(nullable: false),
+                    GameSessionId1 = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoardState", x => x.BoardStateId);
+                    table.ForeignKey(
+                        name: "FK_BoardState_GameSessions_GameSessionId",
+                        column: x => x.GameSessionId,
+                        principalTable: "GameSessions",
+                        principalColumn: "GameSessionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BoardState_GameSessions_GameSessionId1",
+                        column: x => x.GameSessionId1,
+                        principalTable: "GameSessions",
+                        principalColumn: "GameSessionId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Boats",
                 columns: table => new
                 {
@@ -78,6 +103,68 @@ namespace DAL.Migrations
                         principalColumn: "GameSessionId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "BoardTile",
+                columns: table => new
+                {
+                    BoardTileId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BoardStateId = table.Column<int>(nullable: false),
+                    CoordX = table.Column<int>(nullable: false),
+                    CoordY = table.Column<int>(nullable: false),
+                    TileWhiteShips = table.Column<int>(nullable: false),
+                    TileBlackShips = table.Column<int>(nullable: false),
+                    TileWhiteHits = table.Column<int>(nullable: false),
+                    TileBlackHits = table.Column<int>(nullable: false),
+                    BoardStateId1 = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoardTile", x => x.BoardTileId);
+                    table.ForeignKey(
+                        name: "FK_BoardTile_BoardState_BoardStateId",
+                        column: x => x.BoardStateId,
+                        principalTable: "BoardState",
+                        principalColumn: "BoardStateId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BoardTile_BoardState_BoardStateId1",
+                        column: x => x.BoardStateId1,
+                        principalTable: "BoardState",
+                        principalColumn: "BoardStateId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardState_GameSessionId",
+                table: "BoardState",
+                column: "GameSessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardState_GameSessionId1",
+                table: "BoardState",
+                column: "GameSessionId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardTile_BoardStateId",
+                table: "BoardTile",
+                column: "BoardStateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardTile_BoardStateId1",
+                table: "BoardTile",
+                column: "BoardStateId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardTile_CoordX",
+                table: "BoardTile",
+                column: "CoordX");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardTile_CoordY",
+                table: "BoardTile",
+                column: "CoordY");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boats_GameSessionId",
@@ -103,7 +190,13 @@ namespace DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BoardTile");
+
+            migrationBuilder.DropTable(
                 name: "Boats");
+
+            migrationBuilder.DropTable(
+                name: "BoardState");
 
             migrationBuilder.DropTable(
                 name: "GameSessions");

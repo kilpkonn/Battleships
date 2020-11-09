@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
+using DAL;
 
 namespace Battleships
 {
@@ -19,26 +20,21 @@ namespace Battleships
         public const int MaxBoardWidth = 30;
         public const int MaxBoardHeight = 30;
 
-        private static Game? _instance;
-
         private GameMenuUi _menuUi =
             new ConsoleBattleshipsUi.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight);
-        private GameSetupUi _setupUi =
-            new ConsoleSetupView();
+        private GameSetupUi _setupUi = new ConsoleSetupView();
         private GamePlayUi _playUi = new ConsolePlayView();
-
-        public static Game GetInstance()
-        {
-            return _instance ??= new Game();
-        }
+        
 
         public GameBoard? GameBoard { get; set; }
         public bool IsRunning { get; set; } = true;
 
         private Stack<BaseState> GameStates { get; } = new Stack<BaseState>();
+        public AppDbContext Database { get; }
 
-        private Game()
+        public Game(AppDbContext dbCtx)
         {
+            Database = dbCtx;
             GameStates.Push(new MenuState(this, _menuUi));
         }
 

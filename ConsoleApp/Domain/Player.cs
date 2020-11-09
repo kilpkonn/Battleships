@@ -10,7 +10,6 @@ namespace Domain
         [MaxLength(32)] 
         public string Name { get; set; } = null!;
         
-        public int GameSessionId { get; set; }
         public ICollection<GameSession> GameSessions { get; set; } = new List<GameSession>();
     }
 }

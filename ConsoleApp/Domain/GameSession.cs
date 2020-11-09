@@ -20,6 +20,7 @@ namespace Domain
         public int BoardHeight { get; set; }
 
         public ICollection<Boat> Boats { get; set; } = new List<Boat>();
+        public ICollection<BoardState> BoardStates { get; set; } = new List<BoardState>();
 
         public int PlayerWhiteId { get; set; }
         public Player PlayerWhite { get; set; } = null!;
