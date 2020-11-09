@@ -8,6 +8,8 @@ namespace DAL
         public DbSet<Boat> Boats { get; set; } = null!;
         public DbSet<GameSession> GameSessions { get; set; } = null!;
         public DbSet<Player> Players { get; set; } = null!;
+        public DbSet<BoardState> BoardStates { get; set; } = null!;
+        public DbSet<BoardTile> BoardTiles { get; set; } = null!;
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

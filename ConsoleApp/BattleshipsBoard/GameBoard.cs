@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Configuration;
 using Domain;
+using Util;
 
 namespace BattleshipsBoard
 {
@@ -25,6 +25,8 @@ namespace BattleshipsBoard
         public TouchMode TouchMode { get; }
         public bool BackToBackHits { get; set; }
         private int _shipId = 1;
+
+        public List<BoardState> BoardHistory { get; } = new List<BoardState>();
 
         public bool IsSetup { get; private set; } = true;
 
@@ -109,6 +111,7 @@ namespace BattleshipsBoard
 
             WhiteToMove = !WhiteToMove;
             _shipId++;
+            UpdateBoardHistory();
             return true;
         }
 
@@ -123,6 +126,7 @@ namespace BattleshipsBoard
 
                 Board[(int) BoardType.WhiteHits][y, x] = 1;
                 WhiteToMove = BackToBackHits ? Board[(int) BoardType.BlackShips][y, x] != 0 : !WhiteToMove;
+                UpdateBoardHistory();
                 return Board[(int) BoardType.BlackShips][y, x] != 0;
             }
             else
@@ -134,6 +138,7 @@ namespace BattleshipsBoard
 
                 Board[(int) BoardType.BlackHits][y, x] = 1;
                 WhiteToMove = BackToBackHits ? Board[(int) BoardType.WhiteShips][y, x] == 0 : !WhiteToMove;
+                UpdateBoardHistory();
                 return Board[(int) BoardType.WhiteShips][y, x] != 0;
             }
         }
@@ -202,6 +207,11 @@ namespace BattleshipsBoard
             return isFree;
         }
 
+        private void UpdateBoardHistory()
+        {
+            BoardHistory.Add(new BoardState(ArrayUtils.Clone(Board), WhiteToMove));
+        }
+
         public static GameBoard? FromJsonState(JsonGameState state)
         {
             if (!state.IsInitialized)
@@ -226,7 +236,7 @@ namespace BattleshipsBoard
             {
                 if (state.Boards.ContainsKey(i.ToString()))
                 {
-                    board.Board[i] = Util.ArrayUtils.ConvertTo2D(state.Boards[i.ToString()]);
+                    board.Board[i] = ArrayUtils.ConvertTo2D(state.Boards[i.ToString()]);
                 }
             }
 

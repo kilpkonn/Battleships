@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
 using Domain;
+using BoardState = Domain.BoardState;
 
 namespace Battleships
 {
@@ -61,6 +63,37 @@ namespace Battleships
                     playerWhite,
                     playerBlack
                 );
+                List<Boat> boats = _game.GameBoard.ShipCounts
+                    .Select(x => new Boat(x.Key, x.Value, gameSession))
+                    .ToList();
+                
+                List<BoardState> boardStates = new List<BoardState>();
+                IEnumerable<BoardTile> tiles = _game.GameBoard.BoardHistory
+                    .SelectMany(s =>
+                    {
+                        var state = new BoardState(gameSession, s.WhiteToMove);
+                        boardStates.Add(state);
+                        List<BoardTile> boardTiles = new List<BoardTile>();
+                        for (int y = 0; y < s.Board[0].GetLength(0); y++)
+                        {
+                            for (int x = 0; x < s.Board[0].GetLength(1); x++)
+                            {
+                                boardTiles.Add(
+                                    new BoardTile(state, x, y,
+                                        s.Board[(int) GameBoard.BoardType.WhiteShips][y, x],
+                                        s.Board[(int) GameBoard.BoardType.BlackShips][y, x],
+                                        s.Board[(int) GameBoard.BoardType.WhiteHits][y, x],
+                                        s.Board[(int) GameBoard.BoardType.BlackHits][y, x]));
+                            }
+                        }
+
+                        return boardTiles;
+                    });
+                
+                _game.Database.GameSessions.Add(gameSession);
+                _game.Database.Boats.AddRange(boats);
+                _game.Database.BoardStates.AddRange(boardStates);
+                _game.Database.BoardTiles.AddRange(tiles);
                 _game.Database.SaveChanges();
             }
         }

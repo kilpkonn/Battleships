@@ -1,3 +1,5 @@
+using System;
+
 namespace Util
 {
     public class ArrayUtils
@@ -27,6 +29,17 @@ namespace Util
             }
  
             return result;
+        }
+
+        public static T[][,] Clone<T>(T[][,] source)
+        { 
+            T[][,] res = new T[source.Length][,];
+            for (int i = 0; i < source.Length; i++)
+            {
+                res[i] = (source[i].Clone() as T[,])!;
+            }
+
+            return res;
         }
     }
 }
