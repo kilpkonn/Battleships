@@ -63,6 +63,7 @@ namespace DAL.Migrations
                 {
                     BoardStateId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    WhiteToMove = table.Column<bool>(nullable: false),
                     GameSessionId = table.Column<int>(nullable: false),
                     GameSessionId1 = table.Column<int>(nullable: true)
                 },

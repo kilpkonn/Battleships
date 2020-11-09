@@ -2,6 +2,7 @@
 using System.Linq;
 using Configuration;
 using ConsoleMenu;
+using Domain;
 
 namespace ConsoleBattleshipsUi
 {
@@ -98,10 +99,10 @@ namespace ConsoleBattleshipsUi
             Util.ConsoleUtil.WriteBlanks();
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
             string defaultName = "game_" + DateTime.Now.ToString("yyyy-MM-dd");
-            Console.Write($"Enter file name ({defaultName}): ");
+            Console.Write($"Enter file name (use .json to save to json) [{defaultName}]: ");
             string name = Console.ReadLine() ?? "";
             if (string.IsNullOrEmpty(name)) name = defaultName;
-            if (!name.EndsWith(".json")) name += ".json";
+            // if (!name.EndsWith(".json")) name += ".json";
             SaveCallback?.Invoke(name);
             Menu.RevertSelection(1);
         }

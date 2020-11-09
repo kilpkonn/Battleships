@@ -32,6 +32,9 @@ namespace DAL.Migrations
                     b.Property<int?>("GameSessionId1")
                         .HasColumnType("int");
 
+                    b.Property<bool>("WhiteToMove")
+                        .HasColumnType("bit");
+
                     b.HasKey("BoardStateId");
 
                     b.HasIndex("GameSessionId");

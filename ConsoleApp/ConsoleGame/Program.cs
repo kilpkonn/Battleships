@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Battleships;
 using DAL;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleGame
@@ -16,6 +18,20 @@ namespace ConsoleGame
 
             using var dbCtx = new AppDbContext(dbOptions.Options);
             dbCtx.Database.Migrate();
+
+            if (!dbCtx.Players.Any(x => x.Name == "Player White"))
+            {
+                Player player = new Player("Player White");
+                dbCtx.Players.Add(player);
+                dbCtx.SaveChanges();
+            }
+            
+            if (!dbCtx.Players.Any(x => x.Name == "Player Black"))
+            {
+                Player player = new Player("Player Black");
+                dbCtx.Players.Add(player);
+                dbCtx.SaveChanges();
+            }
 
             Game game = new Game(dbCtx);
             game.Run();

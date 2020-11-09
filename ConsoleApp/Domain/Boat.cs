@@ -14,5 +14,17 @@ namespace Domain
         
         public int GameSessionId { get; set; }
         public GameSession GameSession { get; set; } = null!;
+
+
+        public Boat()
+        {
+        }
+
+        public Boat(int lenght, int amount, GameSession gameSession)
+        {
+            Lenght = lenght;
+            Amount = amount;
+            GameSession = gameSession;
+        }
     }
 }

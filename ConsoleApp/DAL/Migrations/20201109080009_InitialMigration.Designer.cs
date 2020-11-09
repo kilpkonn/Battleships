@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201109073435_InitialMigration")]
+    [Migration("20201109080009_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace DAL.Migrations
 
                     b.Property<int?>("GameSessionId1")
                         .HasColumnType("int");
+
+                    b.Property<bool>("WhiteToMove")
+                        .HasColumnType("bit");
 
                     b.HasKey("BoardStateId");
 

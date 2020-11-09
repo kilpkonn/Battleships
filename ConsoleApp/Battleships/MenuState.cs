@@ -1,7 +1,9 @@
 using System.IO;
+using System.Linq;
 using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
+using Domain;
 
 namespace Battleships
 {
@@ -40,11 +42,27 @@ namespace Battleships
         private void SaveGame(string filename)
         {
             if (_game.GameBoard == null) return;
-            
-            // TODO: Save to db
-            
-            GameJsonSerializer serializer = GameJsonSerializer.FromGameBoard(_game.GameBoard);
-            serializer.SaveToFile(filename);
+
+            if (filename.EndsWith(".json"))
+            {
+                GameJsonSerializer serializer = GameJsonSerializer.FromGameBoard(_game.GameBoard);
+                serializer.SaveToFile(filename);
+            }
+            else
+            {
+                Player playerWhite = _game.Database.Players.First(x => x.Name == "Player White");
+                Player playerBlack = _game.Database.Players.First(x => x.Name == "Player Black");
+                GameSession gameSession = new GameSession(
+                    filename,
+                    _game.GameBoard.TouchMode,
+                    _game.GameBoard.BackToBackHits,
+                    _game.GameBoard.Width,
+                    _game.GameBoard.Height,
+                    playerWhite,
+                    playerBlack
+                );
+                _game.Database.SaveChanges();
+            }
         }
 
         private bool LoadGame(string file)
@@ -52,9 +70,9 @@ namespace Battleships
             string jsonStr = File.ReadAllText(file);
             var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
             _game.GameBoard = GameBoard.FromJsonState(jsonState);
-            
+
             // TODO: Load from db
-            
+
             if (_game.GameBoard == null) return false;
 
             if (_game.GameBoard.IsSetup) _game.PushState(Game.GameState.Setup);
