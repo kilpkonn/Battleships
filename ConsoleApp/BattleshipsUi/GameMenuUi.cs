@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ConsoleBattleshipsUi
 {
@@ -8,18 +10,21 @@ namespace ConsoleBattleshipsUi
         public readonly int MinBoardHeight;
         public readonly int MaxBoardWidth;
         public readonly int MaxBoardHeight;
-        
-        protected Configuration.Configuration Configuration { get; }= new Configuration.Configuration(10, 10);
+
+        protected Configuration.Configuration Configuration { get; } = new Configuration.Configuration(10, 10);
+        protected Func<List<string>> LoadDbSessions { get; set; }
 
 
-        public GameMenuUi(int minBoardWidth, int minBoardHeight, int maxBoardWidth, int maxBoardHeight)
+        public GameMenuUi(int minBoardWidth, int minBoardHeight, int maxBoardWidth, int maxBoardHeight,
+            Func<List<string>> loadDbSessions)
         {
             MinBoardWidth = minBoardWidth;
             MinBoardHeight = minBoardHeight;
             MaxBoardWidth = maxBoardWidth;
             MaxBoardHeight = maxBoardHeight;
+            LoadDbSessions = loadDbSessions;
         }
-        
+
         protected int BoardWidth
         {
             get => Configuration.BoardWidth;

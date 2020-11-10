@@ -31,17 +31,17 @@ namespace DAL
                 .HasForeignKey(x => x.PlayerBlackId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<GameSession>()
-                .HasMany<BoardState>()
-                .WithOne(x => x.GameSession)
-                .HasForeignKey(x => x.GameSessionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<BoardState>()
-                .HasMany<BoardTile>()
-                .WithOne(x => x.BoardState)
-                .HasForeignKey(x => x.BoardStateId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<GameSession>()
+            //     .HasMany<BoardState>()
+            //     .WithOne(x => x.GameSession)
+            //     .HasForeignKey(x => x.GameSessionId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            //
+            // modelBuilder.Entity<BoardState>()
+            //     .HasMany<BoardTile>()
+            //     .WithOne(x => x.BoardState)
+            //     .HasForeignKey(x => x.BoardStateId)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BoardTile>()
                 .HasIndex(x => x.CoordX);

@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
@@ -20,10 +22,9 @@ namespace Battleships
         public const int MaxBoardWidth = 30;
         public const int MaxBoardHeight = 30;
 
-        private GameMenuUi _menuUi =
-            new ConsoleBattleshipsUi.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight);
-        private GameSetupUi _setupUi = new ConsoleSetupView();
-        private GamePlayUi _playUi = new ConsolePlayView();
+        private GameMenuUi _menuUi = null!;
+        private GameSetupUi _setupUi = null!;
+        private GamePlayUi _playUi = null!;
         
 
         public GameBoard? GameBoard { get; set; }
@@ -35,7 +36,7 @@ namespace Battleships
         public Game(AppDbContext dbCtx)
         {
             Database = dbCtx;
-            GameStates.Push(new MenuState(this, _menuUi));
+            PushState(GameState.Menu);
         }
 
         public void Run()
@@ -53,7 +54,7 @@ namespace Battleships
             {
                 case GameState.Menu:
                     _menuUi =
-                        new ConsoleBattleshipsUi.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight);
+                        new ConsoleBattleshipsUi.ConsoleMenu(MinBoardWidth, MinBoardHeight, MaxBoardWidth, MaxBoardHeight, LoadDbSessions);
                     newState = new MenuState(this, _menuUi);
                     break;
                 case GameState.Setup:
@@ -74,6 +75,11 @@ namespace Battleships
             if (GameStates.Count == 0) return false;
             GameStates.Pop();
             return true;
+        }
+
+        private List<string> LoadDbSessions()
+        {
+            return Database.GameSessions.Select(x => x.Name).ToList();
         }
 
         public void Exit()

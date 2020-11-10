@@ -17,7 +17,7 @@ namespace BattleshipsBoard
             BlackHits = 3
         }
 
-        public int[][,] Board { get; } = new int[4][,];
+        public int[][,] Board { get; private set; } = new int[4][,];
         public bool WhiteToMove { get; private set; } = true;
         public int Height { get; }
         public int Width { get; }
@@ -240,6 +240,42 @@ namespace BattleshipsBoard
                 }
             }
 
+            return board;
+        }
+
+        public static GameBoard? FromGameSession(GameSession session)
+        {
+            var shipSizes = session.Boats
+                .ToDictionary(x => x.Lenght, x => x.Amount);
+            GameBoard board = new GameBoard(
+                session.BoardWidth,
+                session.BoardHeight,
+                shipSizes,
+                session.TouchMode,
+                session.BackToBackMovesOnHit
+            );
+
+            foreach (var state in session.BoardStates)
+            {
+                var b = new int[4][,];
+                b[(int) BoardType.WhiteShips] = new int[board.Height, board.Width];
+                b[(int) BoardType.BlackShips] = new int[board.Height, board.Width];
+                b[(int) BoardType.WhiteHits] = new int[board.Height, board.Width];
+                b[(int) BoardType.BlackHits] = new int[board.Height, board.Width];
+                
+                foreach (var tile in state.BoardTiles)
+                {
+                    b[(int) BoardType.WhiteShips][tile.CoordY, tile.CoordX] = tile.TileWhiteShips;
+                    b[(int) BoardType.BlackShips][tile.CoordY, tile.CoordX] = tile.TileBlackShips;
+                    b[(int) BoardType.WhiteHits][tile.CoordY, tile.CoordX] = tile.TileWhiteHits;
+                    b[(int) BoardType.BlackHits][tile.CoordY, tile.CoordX] = tile.TileBlackHits;
+                }
+                board.BoardHistory.Add(new BoardState(b, state.WhiteToMove));
+            }
+
+            board.WhiteToMove = board.BoardHistory.Last().WhiteToMove;
+            board.Board = ArrayUtils.Clone(board.BoardHistory.Last().Board);
+            
             return board;
         }
     }

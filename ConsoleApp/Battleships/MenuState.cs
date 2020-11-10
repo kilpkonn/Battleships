@@ -5,6 +5,7 @@ using BattleshipsBoard;
 using ConsoleBattleshipsUi;
 using ConsoleGame;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 using BoardState = Domain.BoardState;
 
 namespace Battleships
@@ -66,7 +67,7 @@ namespace Battleships
                 List<Boat> boats = _game.GameBoard.ShipCounts
                     .Select(x => new Boat(x.Key, x.Value, gameSession))
                     .ToList();
-                
+
                 List<BoardState> boardStates = new List<BoardState>();
                 IEnumerable<BoardTile> tiles = _game.GameBoard.BoardHistory
                     .SelectMany(s =>
@@ -89,7 +90,7 @@ namespace Battleships
 
                         return boardTiles;
                     });
-                
+
                 _game.Database.GameSessions.Add(gameSession);
                 _game.Database.Boats.AddRange(boats);
                 _game.Database.BoardStates.AddRange(boardStates);
@@ -100,11 +101,24 @@ namespace Battleships
 
         private bool LoadGame(string file)
         {
-            string jsonStr = File.ReadAllText(file);
-            var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
-            _game.GameBoard = GameBoard.FromJsonState(jsonState);
-
-            // TODO: Load from db
+            if (file.EndsWith(".json"))
+            {
+                string jsonStr = File.ReadAllText(file);
+                var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
+                _game.GameBoard = GameBoard.FromJsonState(jsonState);
+            }
+            else
+            {
+                var session = _game.Database.GameSessions
+                    .Where(x => x.Name == file)
+                    .Include(x => x.Boats)
+                    .Include(x => x.BoardStates)
+                        .ThenInclude(s => s.BoardTiles)
+                    .Include(x => x.PlayerWhite)
+                    .Include(x => x.PlayerBlack)
+                    .First();
+                _game.GameBoard = GameBoard.FromGameSession(session);
+            }
 
             if (_game.GameBoard == null) return false;
 

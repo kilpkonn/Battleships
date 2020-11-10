@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Configuration;
 using ConsoleMenu;
@@ -23,8 +25,19 @@ namespace ConsoleBattleshipsUi
             Menu.Run();
         }
 
-        public ConsoleMenu(int minBoardWidth, int minBoardHeight, int maxBoardWidth, int maxBoardHeight) : base(
-            minBoardWidth, minBoardHeight, maxBoardWidth, maxBoardHeight)
+        public ConsoleMenu(
+            int minBoardWidth,
+            int minBoardHeight,
+            int maxBoardWidth,
+            int maxBoardHeight,
+            Func<List<string>> loadDbSession
+        ) : base(
+            minBoardWidth,
+            minBoardHeight,
+            maxBoardWidth,
+            maxBoardHeight,
+            loadDbSession
+        )
         {
             Menu.AddMenuItem(new MenuItem("Start Game", "Starts game", onSelectedCallback: StartGame));
             Menu.AddMenuItem(new MenuItem("Save game", "Save game to json", onSelectedCallback: SaveGame));
@@ -66,7 +79,7 @@ namespace ConsoleBattleshipsUi
             Menu.Close();
             StartGameCallback?.Invoke(Configuration);
         }
-        
+
         private void OnToggleBackToBackMoves()
         {
             Configuration.BackToBackMovesOnHit = !Configuration.BackToBackMovesOnHit;
@@ -116,6 +129,13 @@ namespace ConsoleBattleshipsUi
                 LoadGameItem.AddChildItem(new MenuItem(file, $"Load from {file}",
                     onSelectedCallback: () => LoadGame(file)));
             });
+            var dbSessions = LoadDbSessions();
+            dbSessions.ForEach(dbSession =>
+            {
+                LoadGameItem.AddChildItem(new MenuItem(dbSession, $"Load from database session: {dbSession}",
+                    onSelectedCallback: () => LoadGame(dbSession)));
+            });
+            Menu.RecalculateSpacings();
         }
 
         private void LoadGame(string file)
