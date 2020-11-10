@@ -255,7 +255,7 @@ namespace BattleshipsBoard
                 session.BackToBackMovesOnHit
             );
 
-            foreach (var state in session.BoardStates)
+            foreach (var state in session.BoardStates.OrderBy(x => x.BoardStateId))
             {
                 var b = new int[4][,];
                 b[(int) BoardType.WhiteShips] = new int[board.Height, board.Width];

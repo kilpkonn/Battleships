@@ -111,7 +111,7 @@ namespace ConsoleBattleshipsUi
         {
             Util.ConsoleUtil.WriteBlanks();
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
-            string defaultName = "game_" + DateTime.Now.ToString("yyyy-MM-dd");
+            string defaultName = "game_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
             Console.Write($"Enter file name (use .json to save to json) [{defaultName}]: ");
             string name = Console.ReadLine() ?? "";
             if (string.IsNullOrEmpty(name)) name = defaultName;
