@@ -105,6 +105,7 @@ namespace Battleships
             {
                 string jsonStr = File.ReadAllText(file);
                 var jsonState = GameJsonDeserializer.FromJson(jsonStr).Deserialize();
+                if (jsonState == null) return false;
                 _game.GameBoard = GameBoard.FromJsonState(jsonState);
             }
             else

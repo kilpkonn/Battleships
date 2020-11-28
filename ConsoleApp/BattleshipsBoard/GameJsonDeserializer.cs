@@ -23,7 +23,7 @@ namespace BattleshipsBoard
             return new GameJsonDeserializer(json);
         }
 
-        public JsonGameState Deserialize()
+        public JsonGameState? Deserialize()
         {
             return JsonSerializer.Deserialize<JsonGameState>(_jsonStr, _serializerOptions);
         }
