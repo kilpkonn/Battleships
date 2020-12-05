@@ -28,22 +28,48 @@
             <select asp-for="TouchMode" asp-items="Html.GetEnumSelectList<TouchMode>()"></select>
             <span asp-validation-for="BoardWidth" class="text-danger"></span>
         </div>
-        
+
         <div class="row">
             <label asp-for="NewMoveOnHit">New move on hit</label>
             <input type="checkbox" asp-for="NewMoveOnHit" value="@Model.NewMoveOnHit">
         </div>
-        
-        <div class="container">
+
+        <div class="container" id="ship-counts">
             @foreach (var (length, count) in Model.ShipCounts)
             {
                 <div class="row">
-                    <span>Size @length: @count</span>
+                    <label asp-for="@Model.ShipCounts[length]">Size: @length</label>
+                    <input type="number" asp-for="@Model.ShipCounts[length]" value="@count" id="ship-counts-@length">
                 </div>
             }
+        </div>
+        <div class="row">
+            <input type="number" value="Length" id="add-length">
+            <input type="button" value="Add a field" class="add" id="add"/>
         </div>
 
         <button type="submit">Play</button>
     </form>
 
 </div>
+
+@section Scripts
+{
+    <script>
+
+$(function(){
+    $('#add').on('click',function(){
+        const length = $('#add-length').val();
+        if ($('#ship-counts-' + length).length) {
+            // TODO: Show warning
+        } else { 
+            const r = $('<div class="row">' +
+                    '<label for="ShipCounts[' + length + ']">Size ' + length + ':</laber>' +
+                    '<input type="number" name="ShipCounts[' + length + ']" id="ship-counts-' + length + '">' +
+                '</div>');
+         $("#ship-counts").append(r);
+        }
+    });
+});
+</script>
+}

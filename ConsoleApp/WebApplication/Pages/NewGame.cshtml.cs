@@ -32,7 +32,8 @@ namespace WebApplication.Pages
             _db = db;
         }
 
-        public Dictionary<int, int> ShipCounts { get; } = new Dictionary<int, int>
+        [BindProperty]
+        public Dictionary<int, int> ShipCounts { get; set; } = new Dictionary<int, int>
         {
             {5, 1},
             {4, 2},
