@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using DAL;
+using Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
@@ -11,14 +10,20 @@ namespace WebApplication.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly AppDbContext _db;
+        public List<GameSession> OngoingGames { get; set; } = new List<GameSession>();
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, AppDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public void OnGet()
         {
+            OngoingGames = _db.GameSessions.Select(x => x).ToList();
         }
+        
+        
     }
 }

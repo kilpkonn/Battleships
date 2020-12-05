@@ -1,0 +1,49 @@
+@page
+@using Domain
+@model WebApplication.Pages.NewGame
+
+@{
+    ViewData["Title"] = "Battleships";
+}
+
+<div class="text-center">
+    <h1 class="display-4">New Game</h1>
+    <button onclick="window.location.href='/NewGame'">New Game</button>
+
+    <form method="post" class="container">
+        <div class="row">
+            <label asp-for="BoardHeight">Board height</label>
+            <input type="number" asp-for="BoardHeight" value="@Model.BoardHeight">
+            <span asp-validation-for="BoardHeight"></span>
+        </div>
+
+        <div class="row">
+            <label asp-for="BoardWidth">Board width</label>
+            <input type="number" asp-for="BoardWidth" value="@Model.BoardWidth">
+            <span asp-validation-for="BoardWidth" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <label asp-for="TouchMode">Touch mode</label>
+            <select asp-for="TouchMode" asp-items="Html.GetEnumSelectList<TouchMode>()"></select>
+            <span asp-validation-for="BoardWidth" class="text-danger"></span>
+        </div>
+        
+        <div class="row">
+            <label asp-for="NewMoveOnHit">New move on hit</label>
+            <input type="checkbox" asp-for="NewMoveOnHit" value="@Model.NewMoveOnHit">
+        </div>
+        
+        <div class="container">
+            @foreach (var (length, count) in Model.ShipCounts)
+            {
+                <div class="row">
+                    <span>Size @length: @count</span>
+                </div>
+            }
+        </div>
+
+        <button type="submit">Play</button>
+    </form>
+
+</div>

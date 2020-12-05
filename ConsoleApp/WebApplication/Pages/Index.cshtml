@@ -5,6 +5,17 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Battleships</h1>
+    <button onclick="window.location.href='/NewGame'">New Game</button>
+    
+    <ul>
+        @foreach (var game in Model.OngoingGames)
+        {
+            <li>
+                <div>
+                    @Html.Display(game.Name)
+                </div>
+            </li>
+        }
+    </ul>
 </div>

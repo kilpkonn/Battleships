@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Configuration;
 using ConsoleMenu;
 using Domain;
+using Util;
 
 namespace ConsoleBattleshipsUi
 {
@@ -109,7 +109,7 @@ namespace ConsoleBattleshipsUi
 
         private void SaveGame()
         {
-            Util.ConsoleUtil.WriteBlanks();
+            ConsoleUtil.WriteBlanks();
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
             string defaultName = "game_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
             Console.Write($"Enter file name (use .json to save to json) [{defaultName}]: ");
@@ -123,7 +123,7 @@ namespace ConsoleBattleshipsUi
         private void LoadGameSelected()
         {
             LoadGameItem.ClearChildItems();
-            var files = System.IO.Directory.EnumerateFiles(".", "*.json").ToList();
+            var files = Directory.EnumerateFiles(".", "*.json").ToList();
             files.ForEach(file =>
             {
                 LoadGameItem.AddChildItem(new MenuItem(file, $"Load from {file}",

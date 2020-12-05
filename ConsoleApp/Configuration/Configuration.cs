@@ -13,9 +13,9 @@ namespace Configuration
         public Dictionary<int, int> ShipCounts { get; } = new Dictionary<int, int>
         {
             {5, 1},
-            // {4, 2},
-            // {3, 3},
-            // {2, 4},
+            {4, 2},
+            {3, 3},
+            {2, 4},
             // {1, 5}
         };
 
