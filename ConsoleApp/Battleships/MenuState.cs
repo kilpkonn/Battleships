@@ -87,7 +87,6 @@ namespace Battleships
                                         s.Board[(int) GameBoard.BoardType.BlackHits][y, x]));
                             }
                         }
-
                         return boardTiles;
                     });
 
