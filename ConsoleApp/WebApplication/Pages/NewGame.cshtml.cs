@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using BattleshipsBoard;
 using DAL;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +16,9 @@ namespace WebApplication.Pages
 
         [BindProperty] public int BoardWidth { get; set; } = Battleships.Game.MinBoardWidth;
         [BindProperty] public int BoardHeight { get; set; } = Battleships.Game.MinBoardHeight;
+
+        [BindProperty] public string WhiteName { get; set; } = "Player White";
+        [BindProperty] public string BlackName { get; set; } = "Player Black";
 
         [BindProperty] public TouchMode TouchMode { get; set; } = TouchMode.NoTouch;
 
@@ -49,8 +50,20 @@ namespace WebApplication.Pages
         public IActionResult OnPost()
         {
             // TODO: Validate stuff
-            Player playerWhite = _db.Players.First(x => x.Name == "Player White");
-            Player playerBlack = _db.Players.First(x => x.Name == "Player Black");
+            Player? playerWhite = _db.Players.FirstOrDefault(x => x.Name == WhiteName);
+            Player? playerBlack = _db.Players.FirstOrDefault(x => x.Name == BlackName);
+
+            if (playerWhite == null)
+            {
+                playerWhite = new Player(WhiteName);
+                _db.Players.Add(playerWhite);
+            }
+
+            if (playerBlack == null)
+            {
+                playerBlack = new Player(BlackName);
+                _db.Players.Add(playerBlack);
+            }
 
             GameSession gameSession = new GameSession(
                 GameName,
@@ -66,8 +79,8 @@ namespace WebApplication.Pages
                 .Select(x => new Boat(x.Key, x.Value, gameSession))
                 .ToList();
 
-            List<Domain.BoardState> boardStates = new List<Domain.BoardState>();
-            var state = new Domain.BoardState(gameSession, true);
+            List<BoardState> boardStates = new List<BoardState>();
+            var state = new BoardState(gameSession, true);
             boardStates.Add(state);
             
             List<BoardTile> boardTiles = new List<BoardTile>();

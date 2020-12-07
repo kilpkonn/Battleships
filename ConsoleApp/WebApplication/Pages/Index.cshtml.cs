@@ -3,6 +3,7 @@ using System.Linq;
 using DAL;
 using Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace WebApplication.Pages
@@ -21,9 +22,12 @@ namespace WebApplication.Pages
 
         public void OnGet()
         {
-            OngoingGames = _db.GameSessions.Select(x => x).ToList();
+            OngoingGames = _db.GameSessions.Select(x => x)
+                .Include(x => x.PlayerWhite)
+                .Include(x => x.PlayerBlack)
+                .Reverse()
+                .ToList();
         }
-        
         
     }
 }

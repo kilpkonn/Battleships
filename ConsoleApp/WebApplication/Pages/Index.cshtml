@@ -7,13 +7,21 @@
 <div class="text-center">
     <h1 class="display-4">Battleships</h1>
     <button onclick="window.location.href='/NewGame'">New Game</button>
-    
+
     <ul>
         @foreach (var game in Model.OngoingGames)
         {
             <li>
-                <div>
-                    @Html.Display(game.Name)
+                <div class="container row">
+                    <div class="col-4">
+                        @Html.DisplayName(game.Name)
+                    </div>
+                    <div class="col-4">
+                        @Html.DisplayName(game.PlayerWhite.Name)
+                    </div>
+                    <div class="col-4">
+                        @Html.DisplayName(game.PlayerBlack.Name)
+                    </div>
                 </div>
             </li>
         }

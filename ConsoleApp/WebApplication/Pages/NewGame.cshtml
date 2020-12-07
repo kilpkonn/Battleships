@@ -11,6 +11,22 @@
     <button onclick="window.location.href='/NewGame'">New Game</button>
 
     <form method="post" class="container">
+        
+        <div class="row">
+            <label asp-for="GameName">Session name:</label>
+            <input type="text" asp-for="GameName" value="@Model.GameName">
+        </div>
+
+        <div class="row">
+            <label asp-for="WhiteName">Player 1:</label>
+            <input type="text" asp-for="WhiteName" value="@Model.WhiteName">
+        </div>
+
+        <div class="row">
+            <label asp-for="BlackName">Player 1:</label>
+            <input type="text" asp-for="BlackName" value="@Model.BlackName">
+        </div>
+
         <div class="row">
             <label asp-for="BoardHeight">Board height</label>
             <input type="number" asp-for="BoardHeight" value="@Model.BoardHeight">
