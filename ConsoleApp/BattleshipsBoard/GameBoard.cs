@@ -67,13 +67,12 @@ namespace BattleshipsBoard
         public int CountShipsWithSize(int[,] board, int size)
         {
             var shipLengths = CountShips(board);
-
             return shipLengths.Values.Count(v => v == size);
         }
 
         private Dictionary<int, int> CountShips(int[,] board)
         {
-            Dictionary<int, int> shipLengths = new Dictionary<int, int>();
+            Dictionary<int, int> shipLengths = new();
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
@@ -96,7 +95,7 @@ namespace BattleshipsBoard
             {
                 return false;
             }
-            
+
             if (WhiteToMove && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, horizontal, TouchMode))
             {
                 for (int i = 0; i < length; i++)
@@ -269,7 +268,7 @@ namespace BattleshipsBoard
                 b[(int) BoardType.BlackShips] = new int[board.Height, board.Width];
                 b[(int) BoardType.WhiteHits] = new int[board.Height, board.Width];
                 b[(int) BoardType.BlackHits] = new int[board.Height, board.Width];
-                
+
                 foreach (var tile in state.BoardTiles)
                 {
                     b[(int) BoardType.WhiteShips][tile.CoordY, tile.CoordX] = tile.TileWhiteShips;
@@ -277,12 +276,28 @@ namespace BattleshipsBoard
                     b[(int) BoardType.WhiteHits][tile.CoordY, tile.CoordX] = tile.TileWhiteHits;
                     b[(int) BoardType.BlackHits][tile.CoordY, tile.CoordX] = tile.TileBlackHits;
                 }
+
                 board.BoardHistory.Add(new BoardState(b, state.WhiteToMove));
             }
 
             board.WhiteToMove = board.BoardHistory.Last().WhiteToMove;
             board.Board = ArrayUtils.Clone(board.BoardHistory.Last().Board);
-            
+
+            var whiteShipIds = board.CountShips(board.Board[(int) BoardType.WhiteShips]).Keys;
+            var blackShipIds = board.CountShips(board.Board[(int) BoardType.BlackShips]).Keys;
+            if (whiteShipIds.Count == 0 && blackShipIds.Count == 0)
+            {
+                board._shipId = 1;
+            }
+            else if (whiteShipIds.Count != 0 && blackShipIds.Count != 0)
+            {
+                board._shipId = Math.Max(whiteShipIds.Max(), blackShipIds.Max()) + 1;
+            }
+            else
+            {
+                board._shipId = (whiteShipIds.Count == 0 ? blackShipIds.Max() : whiteShipIds.Max()) + 1;
+            }
+
             return board;
         }
     }

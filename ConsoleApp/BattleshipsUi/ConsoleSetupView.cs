@@ -22,11 +22,7 @@ namespace ConsoleBattleshipsUi
             var layer = board.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
             bool horizontal = true;
             int length = board.ShipCounts
-                .Where(s =>
-                {
-                    var a = board.CountShipsWithSize(board.Board[(int) layer], s.Key);
-                    return board.CountShipsWithSize(board.Board[(int) layer], s.Key) < s.Value;
-                })
+                .Where(s => board.CountShipsWithSize(board.Board[(int) layer], s.Key) < s.Value)
                 .Max(s => s.Key);
             do
             {

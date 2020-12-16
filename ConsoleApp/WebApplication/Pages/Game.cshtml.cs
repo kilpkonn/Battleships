@@ -22,26 +22,22 @@ namespace WebApplication.Pages
             _logger = logger;
             _db = db;
         }
-        [BindProperty(SupportsGet = true)]
-        public int? SessionId { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public int? ClickY { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public int? ClickX { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public bool IsHorizontal { get; set; } = true;
-        [BindProperty(SupportsGet = true)]
-        public int? ShipLength { get; set; }
-        
-        
+        [BindProperty(SupportsGet = true)] public int? SessionId { get; set; }
+
+        [BindProperty(SupportsGet = true)] public int? ClickY { get; set; }
+        [BindProperty(SupportsGet = true)] public int? ClickX { get; set; }
+        [BindProperty(SupportsGet = true)] public bool IsHorizontal { get; set; } = true;
+        [BindProperty(SupportsGet = true)] public int? ShipLength { get; set; }
+
+
         public GameSession? GameSession { get; set; }
         public GameBoard? GameBoard { get; set; }
 
         public void OnPost()
         {
             if (!LoadSession()) return;
-            
+
             if (ClickX != null && ClickY != null)
             {
                 if (GameBoard!.IsSetup)
@@ -79,9 +75,9 @@ namespace WebApplication.Pages
         private void ProcessSetupMove()
         {
             if (ShipLength == null) return;
-            
+
             GameBoard!.PlaceShip((int) ClickY!, (int) ClickX!, (int) ShipLength, IsHorizontal);
-            
+
             var state = new BoardState(GameSession!, GameBoard.WhiteToMove);
             GameSession!.BoardStates.Add(state);
             List<BoardTile> boardTiles = new();
@@ -98,13 +94,44 @@ namespace WebApplication.Pages
                             s.Board[(int) GameBoard.BoardType.BlackHits][y, x]));
                 }
             }
+
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
         }
 
         private void ProcessPlayMove()
         {
-            
+        }
+
+        public int ShipsToPlaceInSize(int size)
+        {
+            if (GameBoard == null) return 0;
+
+            var boardType = GameBoard!.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
+            return GameBoard.ShipCounts.GetValueOrDefault(size, 0) -
+                   GameBoard.CountShipsWithSize(GameBoard.Board[(int) boardType], size);
+        }
+
+        public string CellShipStatus(int y, int x)
+        {
+            if (GameBoard != null)
+            {
+                var boardType = GameBoard!.WhiteToMove
+                    ? GameBoard.BoardType.WhiteShips
+                    : GameBoard.BoardType.BlackShips;
+                if (GameBoard.Board[(int) boardType][y, x] != 0) return "ship";
+            }
+
+            return "sea";
+        }
+
+        public int MaxShipSize()
+        {
+            if (GameBoard == null) return 0;
+            var layer = GameBoard.WhiteToMove ? GameBoard.BoardType.WhiteShips : GameBoard.BoardType.BlackShips;
+            return GameBoard.ShipCounts
+                .Where(s => GameBoard.CountShipsWithSize(GameBoard.Board[(int) layer], s.Key) < s.Value)
+                .Max(s => s.Key);
         }
     }
 }

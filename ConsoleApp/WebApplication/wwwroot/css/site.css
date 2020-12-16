@@ -69,3 +69,30 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/* Custom
+-------------------------------------------------- */
+.preview-ship {
+  background: #dea126;
+}
+
+.ship {
+  background: #ce512b;
+}
+
+table.board {
+  width: min(65vh, 100%);
+}
+
+td.table-cell {
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  border: #1d2124;
+}
+
+.btn-cell {
+  width: 100%;
+  padding-top: 100%;
+}

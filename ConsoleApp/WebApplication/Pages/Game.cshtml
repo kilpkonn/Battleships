@@ -1,5 +1,4 @@
 @page
-@using BattleshipsBoard
 @Html.AntiForgeryToken()
 @model WebApplication.Pages.Game
 @{
@@ -7,25 +6,31 @@
 }
 
 <div class="text-center">
-    <table class="table">
+    <table class="table board">
         @for (int y = 0; y < Model?.GameBoard?.Height; y++)
         {
             <tr>
                 @for (int x = 0; x < Model.GameBoard.Width; x++)
                 {
-                    <td>
+                    <td class="table-cell">
                         @if (Model.GameBoard.IsSetup)
                         {
                             if (Model.GameBoard.WhiteToMove)
                             {
-                                <button onclick="placeShip(@Model.SessionId, @y, @x)">
-                                    @Model.GameBoard.Board[(int) GameBoard.BoardType.WhiteShips][y, x]
+                                <button onclick="placeShip(@Model.SessionId, @y, @x)"
+                                        onmouseenter="visualizeShip(@y, @x)"
+                                        class="btn-cell @Model.CellShipStatus(y, x)"
+                                        id="cell-@y-@x">
+                                    @* @Model.GameBoard.Board[(int) GameBoard.BoardType.WhiteShips][y, x] *@
                                 </button>
                             }
                             else
                             {
-                                <button onclick="placeShip(@Model.SessionId, @y, @x)">
-                                    @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x]
+                                <button onclick="placeShip(@Model.SessionId, @y, @x)"
+                                        onmouseenter="visualizeShip(@y, @x)"
+                                        class="btn-cell @Model.CellShipStatus(y, x)"
+                                        id="cell-@y-@x">
+                                    @* @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x] *@
                                 </button>
                             }
                         }
@@ -34,32 +39,60 @@
             </tr>
         }
     </table>
+    <div class="row">
+        <button id="toggle-horizontal" onclick="toggleHorizontal()">Horizontal</button>
+        @foreach (var (length, count) in Model!.GameBoard!.ShipCounts)
+        {
+            <button onclick="setShipSize(@length)" id="ship-size-@length">
+                Size @length (@Model.ShipsToPlaceInSize(length))
+            </button>
+        }
+    </div>
 </div>
 
 @section Scripts
 {
     <script>
     let isHorizontal = true;
-    let shipLength = 5;
+    let shipLength = @Model.MaxShipSize();
     
-    $(function(){
-        $('.cell').on('hover',function(){
-            console.log("hover");
-        });
+    $(window).keypress(function(e) {
+       if (e.which === 32) {
+          toggleHorizontal();
+       }
     });
     
     function placeShip(session, y, x) {
-        console.log(session, y, x)
       $.post("/Game", {
           SessionId: session,
           ClickX: x,
           ClickY: y,
-          IsHorizontal: true,
-          ShipLength: 5,
+          IsHorizontal: isHorizontal,
+          ShipLength: shipLength,
           __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
       }, function () {
-          window.location.href = "/Game?SessionId=@Model!.SessionId!";
+          window.location.href = "/Game?SessionId=@Model!.SessionId";
       });
+    }
+    
+    function toggleHorizontal() {
+        isHorizontal = !isHorizontal;
+        $('#toggle-horizontal').text(isHorizontal ? 'Horizontal' : 'Vertical');
+    }
+    
+    function setShipSize(size) {
+        shipLength = size;    
+    }
+    
+    function visualizeShip(y, x) {
+        $('.preview-ship').removeClass('preview-ship');
+        for (let i = 0; i < shipLength; i++) {
+            if (isHorizontal) {
+                $('#cell-' + y + '-' + (x + i)).addClass('preview-ship');
+            } else {
+                $('#cell-' + (y + i) + '-' + x).addClass('preview-ship');
+            }
+        }
     }
     </script>
 }
