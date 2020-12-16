@@ -90,6 +90,13 @@ namespace BattleshipsBoard
 
         public bool PlaceShip(int y, int x, int length, bool horizontal)
         {
+            if (!ShipCounts.ContainsKey(length) ||
+                WhiteToMove && CountShipsWithSize(Board[(int) BoardType.WhiteShips], length) >= ShipCounts[length] ||
+                !WhiteToMove && CountShipsWithSize(Board[(int) BoardType.BlackShips], length) >= ShipCounts[length])
+            {
+                return false;
+            }
+            
             if (WhiteToMove && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, horizontal, TouchMode))
             {
                 for (int i = 0; i < length; i++)
@@ -243,7 +250,7 @@ namespace BattleshipsBoard
             return board;
         }
 
-        public static GameBoard? FromGameSession(GameSession session)
+        public static GameBoard FromGameSession(GameSession session)
         {
             var shipSizes = session.Boats
                 .ToDictionary(x => x.Lenght, x => x.Amount);

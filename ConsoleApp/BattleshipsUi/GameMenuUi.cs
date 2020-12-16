@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace ConsoleBattleshipsUi
@@ -11,7 +10,7 @@ namespace ConsoleBattleshipsUi
         public readonly int MaxBoardWidth;
         public readonly int MaxBoardHeight;
 
-        protected Configuration.Configuration Configuration { get; } = new Configuration.Configuration(10, 10);
+        protected Configuration.Configuration Configuration { get; } = new(10, 10);
         protected Func<List<string>> LoadDbSessions { get; set; }
 
 

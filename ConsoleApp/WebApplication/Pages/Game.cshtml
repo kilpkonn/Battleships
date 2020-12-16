@@ -1,19 +1,65 @@
 @page
+@using BattleshipsBoard
+@Html.AntiForgeryToken()
 @model WebApplication.Pages.Game
-
 @{
-    Layout = null;
+    ViewData["Title"] = "Battleships";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
+<div class="text-center">
+    <table class="table">
+        @for (int y = 0; y < Model?.GameBoard?.Height; y++)
+        {
+            <tr>
+                @for (int x = 0; x < Model.GameBoard.Width; x++)
+                {
+                    <td>
+                        @if (Model.GameBoard.IsSetup)
+                        {
+                            if (Model.GameBoard.WhiteToMove)
+                            {
+                                <button onclick="placeShip(@Model.SessionId, @y, @x)">
+                                    @Model.GameBoard.Board[(int) GameBoard.BoardType.WhiteShips][y, x]
+                                </button>
+                            }
+                            else
+                            {
+                                <button onclick="placeShip(@Model.SessionId, @y, @x)">
+                                    @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x]
+                                </button>
+                            }
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </table>
 </div>
-</body>
-</html>
+
+@section Scripts
+{
+    <script>
+    let isHorizontal = true;
+    let shipLength = 5;
+    
+    $(function(){
+        $('.cell').on('hover',function(){
+            console.log("hover");
+        });
+    });
+    
+    function placeShip(session, y, x) {
+        console.log(session, y, x)
+      $.post("/Game", {
+          SessionId: session,
+          ClickX: x,
+          ClickY: y,
+          IsHorizontal: true,
+          ShipLength: 5,
+          __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+      }, function () {
+          window.location.href = "/Game?SessionId=@Model!.SessionId!";
+      });
+    }
+    </script>
+}

@@ -25,7 +25,7 @@ namespace WebApplication.Pages
             OngoingGames = _db.GameSessions.Select(x => x)
                 .Include(x => x.PlayerWhite)
                 .Include(x => x.PlayerBlack)
-                .Reverse()
+                .OrderByDescending(x => x.GameSessionId)
                 .ToList();
         }
         

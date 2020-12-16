@@ -55,7 +55,7 @@ namespace Battleships
             {
                 Player playerWhite = _game.Database.Players.First(x => x.Name == "Player White");
                 Player playerBlack = _game.Database.Players.First(x => x.Name == "Player Black");
-                GameSession gameSession = new GameSession(
+                GameSession gameSession = new(
                     filename,
                     _game.GameBoard.TouchMode,
                     _game.GameBoard.BackToBackHits,
@@ -68,13 +68,13 @@ namespace Battleships
                     .Select(x => new Boat(x.Key, x.Value, gameSession))
                     .ToList();
 
-                List<BoardState> boardStates = new List<BoardState>();
+                List<BoardState> boardStates = new();
                 IEnumerable<BoardTile> tiles = _game.GameBoard.BoardHistory
                     .SelectMany(s =>
                     {
                         var state = new BoardState(gameSession, s.WhiteToMove);
                         boardStates.Add(state);
-                        List<BoardTile> boardTiles = new List<BoardTile>();
+                        List<BoardTile> boardTiles = new();
                         for (int y = 0; y < s.Board[0].GetLength(0); y++)
                         {
                             for (int x = 0; x < s.Board[0].GetLength(1); x++)

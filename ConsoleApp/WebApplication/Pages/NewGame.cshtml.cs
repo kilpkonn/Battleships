@@ -65,7 +65,7 @@ namespace WebApplication.Pages
                 _db.Players.Add(playerBlack);
             }
 
-            GameSession gameSession = new GameSession(
+            GameSession gameSession = new(
                 GameName,
                 TouchMode,
                 NewMoveOnHit,
@@ -79,11 +79,11 @@ namespace WebApplication.Pages
                 .Select(x => new Boat(x.Key, x.Value, gameSession))
                 .ToList();
 
-            List<BoardState> boardStates = new List<BoardState>();
+            List<BoardState> boardStates = new();
             var state = new BoardState(gameSession, true);
             boardStates.Add(state);
             
-            List<BoardTile> boardTiles = new List<BoardTile>();
+            List<BoardTile> boardTiles = new();
             for (int y = 0; y < BoardHeight; y++)
             {
                 for (int x = 0; x < BoardWidth; x++)
@@ -98,7 +98,7 @@ namespace WebApplication.Pages
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
             
-            return new RedirectToPageResult("./Game", new { SessionId = gameSession.GameSessionId});
+            return new RedirectToPageResult("/Game", new { SessionId = gameSession.GameSessionId});
         }
     }
 }
