@@ -98,7 +98,7 @@ namespace WebApplication.Pages
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
             
-            return new RedirectToPageResult("/Game", new { SessionId = gameSession.GameSessionId});
+            return new RedirectToPageResult("/Setup", new { SessionId = gameSession.GameSessionId});
         }
     }
 }

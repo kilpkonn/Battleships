@@ -81,6 +81,18 @@ body {
   background: #ce512b;
 }
 
+.preview-bomb {
+  background: #6f4eac;
+}
+
+.hit {
+  background: #00a521;
+}
+
+.miss {
+  background: #d22626;
+}
+
 table.board {
   width: min(65vh, 100%);
 }
