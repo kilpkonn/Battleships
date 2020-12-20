@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BattleshipsBoard;
@@ -43,12 +44,20 @@ namespace WebApplication.Pages
             return new AcceptedResult();
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
             if (!LoadSession())
             {
-                return;
+                return new EmptyResult();
             }
+
+            var result = GameBoard!.GameResult();
+            if (result != null)
+            {
+                return new RedirectToPageResult("/Result", new {SessionId});
+            }
+
+            return new PageResult();
         }
 
         public string CellStatus(int y, int x)
@@ -61,8 +70,10 @@ namespace WebApplication.Pages
                 var boardTypeHits = GameBoard!.WhiteToMove
                     ? GameBoard.BoardType.WhiteHits
                     : GameBoard.BoardType.BlackHits;
+                var id = GameBoard.Board[(int) boardTypeShips][y, x];
                 if (GameBoard.Board[(int) boardTypeHits][y, x] != 0)
                 {
+                    if (id != 0 && IsSank((int) boardTypeShips, (int) boardTypeHits, y, x, id)) return "sank";
                     if (GameBoard.Board[(int) boardTypeShips][y, x] != 0) return "hit";
                     return "miss";
                 }
@@ -111,6 +122,20 @@ namespace WebApplication.Pages
 
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
+        }
+
+        private bool IsSank(int boardShipsIdx, int boardHitsIdx, int y, int x, int id, HashSet<Tuple<int, int>>? visited = null)
+        {
+            if (visited == null) visited = new HashSet<Tuple<int, int>>();
+            if (visited.Contains(new Tuple<int, int>(y, x))) return true;
+            if (GameBoard!.Board[boardShipsIdx][y, x] != id) return true;
+            if (GameBoard!.Board[boardShipsIdx][y, x] == id && GameBoard.Board[boardHitsIdx][y, x] == 0) return false;
+            visited.Add(new Tuple<int, int>(y, x));
+
+            return (y <= 0 || IsSank(boardShipsIdx, boardHitsIdx, y - 1, x, id, visited)) &&
+                   (y >= GameBoard.Height - 1 || IsSank(boardShipsIdx, boardHitsIdx, y + 1, x, id, visited)) &&
+                   (x <= 0 || IsSank(boardShipsIdx, boardHitsIdx, y, x - 1, id, visited)) &&
+                   (x >= GameBoard.Width - 1 || IsSank(boardShipsIdx, boardHitsIdx, y, x + 1, id, visited));
         }
     }
 }

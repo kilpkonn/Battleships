@@ -86,11 +86,15 @@ body {
 }
 
 .hit {
-  background: #00a521;
+  background: #b6690a;
+}
+
+.sank {
+  background: #c61717;
 }
 
 .miss {
-  background: #d22626;
+  background: #3a6cb8;
 }
 
 table.board {
@@ -107,4 +111,13 @@ td.table-cell {
 .btn-cell {
   width: 100%;
   padding-top: 100%;
+}
+
+.btn-important {
+  margin: 16px;
+  font-size: 1.6em;
+}
+
+tr.clickable {
+  cursor: pointer;
 }

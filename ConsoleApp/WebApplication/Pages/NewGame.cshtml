@@ -7,64 +7,86 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">New Game</h1>
-    <button onclick="window.location.href='/NewGame'">New Game</button>
+    <h2 class="display-4">New Game</h2>
 
-    <form method="post" class="container">
-        
-        <div class="row">
-            <label asp-for="GameName">Session name:</label>
-            <input type="text" asp-for="GameName" value="@Model.GameName">
+    <form method="post">
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="GameName">Session name:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" asp-for="GameName" value="@Model.GameName">
+            </div>
         </div>
 
-        <div class="row">
-            <label asp-for="WhiteName">Player 1:</label>
-            <input type="text" asp-for="WhiteName" value="@Model.WhiteName">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="WhiteName">Player 1:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" asp-for="WhiteName" value="@Model.WhiteName">
+            </div>
         </div>
 
-        <div class="row">
-            <label asp-for="BlackName">Player 1:</label>
-            <input type="text" asp-for="BlackName" value="@Model.BlackName">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="BlackName">Player 1:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" asp-for="BlackName" value="@Model.BlackName">
+            </div>
         </div>
 
-        <div class="row">
-            <label asp-for="BoardHeight">Board height</label>
-            <input type="number" asp-for="BoardHeight" value="@Model.BoardHeight">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="BoardHeight">Board height</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" asp-for="BoardHeight" value="@Model.BoardHeight">
+            </div>
             <span asp-validation-for="BoardHeight"></span>
         </div>
 
-        <div class="row">
-            <label asp-for="BoardWidth">Board width</label>
-            <input type="number" asp-for="BoardWidth" value="@Model.BoardWidth">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="BoardWidth">Board width</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" asp-for="BoardWidth" value="@Model.BoardWidth">
+            </div>
             <span asp-validation-for="BoardWidth" class="text-danger"></span>
         </div>
 
-        <div class="row">
-            <label asp-for="TouchMode">Touch mode</label>
-            <select asp-for="TouchMode" asp-items="Html.GetEnumSelectList<TouchMode>()"></select>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" asp-for="TouchMode">Touch mode</label>
+            <div class="col-sm-10">
+                <select class="form-control" asp-for="TouchMode" asp-items="Html.GetEnumSelectList<TouchMode>()"></select>
+            </div>
             <span asp-validation-for="BoardWidth" class="text-danger"></span>
         </div>
 
-        <div class="row">
-            <label asp-for="NewMoveOnHit">New move on hit</label>
-            <input type="checkbox" asp-for="NewMoveOnHit" value="@Model.NewMoveOnHit">
+        <div class="form-group row">
+            <div class="col-sm-2">Back to back moves</div>
+            <div class="col-sm-10">
+                <div class="form-check float-left">
+                    <input type="checkbox" class="form-check-input" asp-for="NewMoveOnHit" value="@Model.NewMoveOnHit">
+                    <label class="form-check-label" asp-for="NewMoveOnHit">New move on hit</label>
+                </div>
+            </div>
         </div>
 
-        <div class="container" id="ship-counts">
+        <div id="ship-counts">
             @foreach (var (length, count) in Model.ShipCounts)
             {
-                <div class="row">
-                    <label asp-for="@Model.ShipCounts[length]">Size: @length</label>
-                    <input type="number" asp-for="@Model.ShipCounts[length]" value="@count" id="ship-counts-@length">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" asp-for="@Model.ShipCounts[length]">Size: @length</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" asp-for="@Model.ShipCounts[length]" value="@count" id="ship-counts-@length">
+                    </div>
                 </div>
             }
         </div>
-        <div class="row">
-            <input type="number" value="Length" id="add-length">
-            <input type="button" value="Add a field" class="add" id="add"/>
+
+        <div class="form-group row m-4">
+            <div class="col-4 offset-3">
+                <input type="number" class="form-control" value="Length" id="add-length">
+            </div>
+            <input type="button" value="Add a field" class="add btn btn-light" id="add"/>
         </div>
 
-        <button type="submit">Play</button>
+
+        <button class="btn btn-success btn-important" type="submit">Play</button>
     </form>
 
 </div>
@@ -79,9 +101,11 @@ $(function(){
         if ($('#ship-counts-' + length).length) {
             // TODO: Show warning
         } else { 
-            const r = $('<div class="row">' +
-                    '<label for="ShipCounts[' + length + ']">Size ' + length + ':</laber>' +
-                    '<input type="number" name="ShipCounts[' + length + ']" id="ship-counts-' + length + '">' +
+            const r = $('<div class="form-group row">' +
+                    '<label class="col-sm-2 col-form-label" for="ShipCounts[' + length + ']">Size ' + length + ':</label>' +
+                    '<div class="col-sm-10">' +
+                        '<input type="number" class="form-control" name="ShipCounts[' + length + ']" id="ship-counts-' + length + '">' +
+                    '</div>' +
                 '</div>');
          $("#ship-counts").append(r);
         }

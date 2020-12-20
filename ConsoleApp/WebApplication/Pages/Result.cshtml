@@ -1,0 +1,17 @@
+@page
+@model WebApplication.Pages.Result
+@{
+    ViewData["Title"] = "Battleships";
+}
+
+<div class="text-center">
+    @if (Model.IsWhiteWon())
+    {
+        <h3>@Model?.GameSession?.PlayerWhite.Name won!</h3>
+    }
+    else
+    {
+        <h3>@Model?.GameSession?.PlayerBlack.Name won!</h3>
+    }
+    <a href="/">Play Again</a>
+</div>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BattleshipsBoard;
 using DAL;
 using Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +13,7 @@ namespace WebApplication.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly AppDbContext _db;
-        public List<GameSession> OngoingGames { get; set; } = new List<GameSession>();
+        public List<GameSession> OngoingGames { get; set; } = new();
 
         public IndexModel(ILogger<IndexModel> logger, AppDbContext db)
         {
@@ -23,10 +24,22 @@ namespace WebApplication.Pages
         public void OnGet()
         {
             OngoingGames = _db.GameSessions.Select(x => x)
+                .Include(x => x.Boats)
+                .Include(x => x.BoardStates)
+                    .ThenInclude(s => s.BoardTiles)
                 .Include(x => x.PlayerWhite)
                 .Include(x => x.PlayerBlack)
                 .OrderByDescending(x => x.GameSessionId)
                 .ToList();
+        }
+
+        public string GetSessionState(GameSession session)
+        {
+            var board = GameBoard.FromGameSession(session);
+
+            if (!board.IsSetupComplete()) return "Setup";
+            if (board.GameResult() != null) return "Ended";
+            return "Playing";
         }
         
     }

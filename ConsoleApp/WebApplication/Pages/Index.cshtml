@@ -6,24 +6,55 @@
 
 <div class="text-center">
     <h1 class="display-4">Battleships</h1>
-    <button onclick="window.location.href='/NewGame'">New Game</button>
+    <button class="btn btn-light btn-important" onclick="window.location.href='/NewGame'">New Game</button>
 
-    <ul>
+    <table class="table thead-dark">
+        <thead>
+        <tr>
+            <th>
+                Game
+            </th>
+            <th>
+                Board size
+            </th>
+            <th>
+                Player White
+            </th>
+            <th>
+                Player Black
+            </th>
+            <th>
+                Touch mode
+            </th>
+            <th>
+                State
+            </th>
+        </tr>
+        </thead>
+        <tbody>
         @foreach (var game in Model.OngoingGames)
         {
-            <li>
-                <div class="container row">
-                    <div class="col-4">
-                        @Html.DisplayName(game.Name)
-                    </div>
-                    <div class="col-4">
-                        @Html.DisplayName(game.PlayerWhite.Name)
-                    </div>
-                    <div class="col-4">
-                        @Html.DisplayName(game.PlayerBlack.Name)
-                    </div>
-                </div>
-            </li>
+            <tr class="clickable" onclick="window.location='/Setup?SessionId=@game.GameSessionId'">
+                <td>
+                    @Html.DisplayName(game.Name)
+                </td>
+                <td>
+                    @Html.DisplayName(game.BoardHeight.ToString()) x @Html.DisplayName(game.BoardWidth.ToString())
+                </td>
+                <td>
+                    @Html.DisplayName(game.PlayerWhite.Name)
+                </td>
+                <td>
+                    @Html.DisplayName(game.PlayerBlack.Name)
+                </td>
+                <td>
+                    @Html.DisplayName(game.TouchMode.ToString())
+                </td>
+                <td>
+                    @Model.GetSessionState(game)
+                </td>
+            </tr>
         }
-    </ul>
+        </tbody>
+    </table>
 </div>

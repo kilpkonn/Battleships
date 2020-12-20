@@ -77,6 +77,8 @@ namespace WebApplication.Pages
 
             List<Boat> boats = ShipCounts
                 .Select(x => new Boat(x.Key, x.Value, gameSession))
+                .Where(x => x.Amount > 0)
+                .Where(x => x.Lenght > 0)
                 .ToList();
 
             List<BoardState> boardStates = new();
