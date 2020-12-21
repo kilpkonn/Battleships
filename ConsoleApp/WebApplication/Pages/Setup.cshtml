@@ -6,8 +6,8 @@
 }
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div>
+    <div class="container row justify-content-center">
+        <div class="col-8">
         <table class="table board">
             @for (int y = 0; y < Model?.GameBoard?.Height; y++)
             {
@@ -49,6 +49,7 @@
             </button>
         }
         <button class="btn btn-success m-2" onclick="generateBoard()">Generate board</button>
+        <a class="btn btn-danger m-2" href="/Setup?SessionId=@Model!.SessionId&Revert=true">Revert Move</a>
     </div>
 </div>
 

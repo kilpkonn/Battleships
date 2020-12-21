@@ -6,36 +6,67 @@
 }
 
 <div class="text-center">
-    <table class="table board">
-        @for (int y = 0; y < Model?.GameBoard?.Height; y++)
-        {
-            <tr>
-                @for (int x = 0; x < Model?.GameBoard?.Width; x++)
+    <div class="container row">
+        <div class="col-6 justify-content-center">
+            <h3>Enemy ships</h3>
+            <table class="table board m-4">
+                @for (int y = 0; y < Model?.GameBoard?.Height; y++)
                 {
-                    <td class="table-cell">
-                        @if (Model.GameBoard.WhiteToMove)
-                            {
-                                <button onclick="placeBomb(@y, @x)"
-                                        onmouseenter="visualizeBomb(@y, @x)"
-                                        class="btn-cell @Model.CellStatus(y, x)"
-                                        id="cell-@y-@x">
-                                    @* @Model.GameBoard.Board[(int) GameBoard.BoardType.WhiteShips][y, x] *@
-                                </button>
-                            }
-                            else
-                            {
-                                <button onclick="placeBomb(@y, @x)"
-                                        onmouseenter="visualizeBomb(@y, @x)"
-                                        class="btn-cell @Model.CellStatus(y, x)"
-                                        id="cell-@y-@x">
-                                    @* @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x] *@
-                                </button>
-                            }
-                    </td>
+                    <tr>
+                        @for (int x = 0; x < Model?.GameBoard?.Width; x++)
+                        {
+                            <td class="table-cell">
+                                @if (Model.GameBoard.WhiteToMove)
+                                {
+                                    <button onclick="placeBomb(@y, @x)"
+                                            onmouseenter="visualizeBomb(@y, @x)"
+                                            class="btn-cell @Model.CellStatus(y, x)"
+                                            id="cell-@y-@x">
+                                        @* @Model.GameBoard.Board[(int) GameBoard.BoardType.WhiteShips][y, x] *@
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button onclick="placeBomb(@y, @x)"
+                                            onmouseenter="visualizeBomb(@y, @x)"
+                                            class="btn-cell @Model.CellStatus(y, x)"
+                                            id="cell-@y-@x">
+                                        @* @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x] *@
+                                    </button>
+                                }
+                            </td>
+                        }
+                    </tr>
                 }
-            </tr>
-        }
-    </table>
+            </table>
+        </div>
+        <div class="col-6 justify-content-center">
+            <h3>Own ships</h3>
+            <table class="table board m-4">
+                @for (int y = 0; y < Model?.GameBoard?.Height; y++)
+                {
+                    <tr>
+                        @for (int x = 0; x < Model?.GameBoard?.Width; x++)
+                        {
+                            <td class="table-cell">
+                                @if (Model.GameBoard.WhiteToMove)
+                                {
+                                    <button class="btn-cell @Model.OwnCellStatus(y, x)"></button>
+                                }
+                                else
+                                {
+                                    <button class="btn-cell @Model.OwnCellStatus(y, x)"></button>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <a class="btn btn-danger" href="/Game?SessionId=@Model!.SessionId&Revert=true">Revert Move</a>
+    </div>
 </div>
 
 @section Scripts

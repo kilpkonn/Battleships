@@ -16,12 +16,14 @@ namespace WebApplication.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly AppDbContext _db;
-        
+
         [BindProperty(SupportsGet = true)] public int? SessionId { get; set; }
 
-        [BindProperty(SupportsGet = true)] public int? ClickY { get; set; }
-        [BindProperty(SupportsGet = true)] public int? ClickX { get; set; }
-        
+        [BindProperty(SupportsGet = true)] public bool Revert { get; set; } = false;
+
+        [BindProperty] public int? ClickY { get; set; }
+        [BindProperty] public int? ClickX { get; set; }
+
         public GameSession? GameSession { get; set; }
         public GameBoard? GameBoard { get; set; }
 
@@ -57,6 +59,21 @@ namespace WebApplication.Pages
                 return new RedirectToPageResult("/Result", new {SessionId});
             }
 
+            if (Revert)
+            {
+                if (_db.BoardStates.Count() >= 2)
+                {
+                    var lastState = _db.BoardStates.Select(x => x)
+                        .OrderByDescending(x => x.BoardStateId)
+                        .Include(x => x.BoardTiles)
+                        .First();
+                    _db.BoardTiles.RemoveRange(lastState.BoardTiles);
+                    _db.BoardStates.Remove(lastState);
+                    _db.SaveChanges();
+                    return new RedirectToPageResult("/Setup", new {SessionId});
+                }
+            }
+
             return new PageResult();
         }
 
@@ -81,7 +98,34 @@ namespace WebApplication.Pages
 
             return "sea";
         }
-        
+
+        public string OwnCellStatus(int y, int x)
+        {
+            if (GameBoard != null)
+            {
+                var boardTypeShips = !GameBoard!.WhiteToMove
+                    ? GameBoard.BoardType.BlackShips
+                    : GameBoard.BoardType.WhiteShips;
+                var boardTypeHits = !GameBoard!.WhiteToMove
+                    ? GameBoard.BoardType.WhiteHits
+                    : GameBoard.BoardType.BlackHits;
+                var id = GameBoard.Board[(int) boardTypeShips][y, x];
+                if (GameBoard.Board[(int) boardTypeHits][y, x] != 0)
+                {
+                    if (id != 0 && IsSank((int) boardTypeShips, (int) boardTypeHits, y, x, id)) return "sank";
+                    if (GameBoard.Board[(int) boardTypeShips][y, x] != 0) return "hit";
+                    return "miss";
+                }
+
+                if (GameBoard.Board[(int) boardTypeShips][y, x] != 0)
+                {
+                    return "ship";
+                }
+            }
+
+            return "sea";
+        }
+
         private bool LoadSession()
         {
             GameSession = _db.GameSessions.Select(x => x)
@@ -97,10 +141,9 @@ namespace WebApplication.Pages
             GameBoard = GameBoard.FromGameSession(GameSession);
             return GameBoard != null;
         }
-        
+
         private void ProcessMove()
         {
-
             GameBoard!.DropBomb((int) ClickY!, (int) ClickX!);
 
             var state = new BoardState(GameSession!, GameBoard.WhiteToMove);
@@ -124,7 +167,8 @@ namespace WebApplication.Pages
             _db.SaveChanges();
         }
 
-        private bool IsSank(int boardShipsIdx, int boardHitsIdx, int y, int x, int id, HashSet<Tuple<int, int>>? visited = null)
+        private bool IsSank(int boardShipsIdx, int boardHitsIdx, int y, int x, int id,
+            HashSet<Tuple<int, int>>? visited = null)
         {
             if (visited == null) visited = new HashSet<Tuple<int, int>>();
             if (visited.Contains(new Tuple<int, int>(y, x))) return true;

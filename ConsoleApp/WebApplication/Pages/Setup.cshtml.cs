@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using BattleshipsBoard;
@@ -24,6 +23,7 @@ namespace WebApplication.Pages
         }
 
         [BindProperty(SupportsGet = true)] public int? SessionId { get; set; }
+        [BindProperty(SupportsGet = true)] public bool Revert { get; set; } = false;
 
         [BindProperty] public int? ClickY { get; set; }
         [BindProperty] public int? ClickX { get; set; }
@@ -42,9 +42,14 @@ namespace WebApplication.Pages
 
             if (GenerateBoard)
             {
-                if (GameBoard.GenerateBoard())
+                bool success = false;
+                for (int i = 0; i < 10 && !success; i++)
                 {
-                    SaveState();
+                    if (GameBoard.GenerateBoard())
+                    {
+                        success = true;
+                        SaveState();
+                    }
                 }
             } else if (ClickX != null && ClickY != null)
             {
@@ -64,6 +69,21 @@ namespace WebApplication.Pages
             if (GameBoard!.IsSetupComplete())
             {
                 return new RedirectToPageResult("/Game", new {SessionId});
+            }
+            
+            if (Revert)
+            {
+                if (_db.BoardStates.Count() >= 2)
+                {
+                    var lastState = _db.BoardStates.Select(x => x)
+                        .OrderByDescending(x => x.BoardStateId)
+                        .Include(x => x.BoardTiles)
+                        .First();
+                    _db.BoardTiles.RemoveRange(lastState.BoardTiles);
+                    _db.BoardStates.Remove(lastState);
+                    _db.SaveChanges();
+                    LoadSession();
+                }
             }
 
             return new PageResult();
@@ -96,7 +116,7 @@ namespace WebApplication.Pages
 
         private void SaveState()
         {
-            var state = new BoardState(GameSession!, GameBoard.WhiteToMove);
+            var state = new BoardState(GameSession!, GameBoard!.WhiteToMove);
             GameSession!.BoardStates.Add(state);
             List<BoardTile> boardTiles = new();
             var s = GameBoard.BoardHistory.Last();
