@@ -15,6 +15,7 @@
             <label class="col-sm-2 col-form-label" asp-for="GameName">Session name:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" asp-for="GameName" value="@Model.GameName">
+                <span asp-validation-for="GameName" class="text-danger"></span>
             </div>
         </div>
 
@@ -22,6 +23,7 @@
             <label class="col-sm-2 col-form-label" asp-for="WhiteName">Player 1:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" asp-for="WhiteName" value="@Model.WhiteName">
+                <span asp-validation-for="WhiteName" class="text-danger"></span>
             </div>
         </div>
 
@@ -29,6 +31,7 @@
             <label class="col-sm-2 col-form-label" asp-for="BlackName">Player 1:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" asp-for="BlackName" value="@Model.BlackName">
+                <span asp-validation-for="BlackName" class="text-danger"></span>
             </div>
         </div>
 
@@ -36,16 +39,16 @@
             <label class="col-sm-2 col-form-label" asp-for="BoardHeight">Board height</label>
             <div class="col-sm-10">
                 <input type="number" class="form-control" asp-for="BoardHeight" value="@Model.BoardHeight">
+                <span asp-validation-for="BoardHeight" class="text-danger"></span>
             </div>
-            <span asp-validation-for="BoardHeight"></span>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" asp-for="BoardWidth">Board width</label>
             <div class="col-sm-10">
                 <input type="number" class="form-control" asp-for="BoardWidth" value="@Model.BoardWidth">
+                <span asp-validation-for="BoardWidth" class="text-danger"></span>
             </div>
-            <span asp-validation-for="BoardWidth" class="text-danger"></span>
         </div>
 
         <div class="form-group row">
@@ -53,7 +56,6 @@
             <div class="col-sm-10">
                 <select class="form-control" asp-for="TouchMode" asp-items="Html.GetEnumSelectList<TouchMode>()"></select>
             </div>
-            <span asp-validation-for="BoardWidth" class="text-danger"></span>
         </div>
 
         <div class="form-group row">
@@ -80,12 +82,11 @@
 
         <div class="form-group row m-4">
             <div class="col-4 offset-3">
-                <input type="number" class="form-control" value="Length" id="add-length">
+                <input type="number" class="form-control" value="" id="add-length">
             </div>
             <input type="button" value="Add a field" class="add btn btn-light" id="add"/>
         </div>
-
-
+        
         <button class="btn btn-success btn-important" type="submit">Play</button>
     </form>
 
@@ -93,7 +94,8 @@
 
 @section Scripts
 {
-    <script>
+<partial name="_ValidationScriptsPartial" />
+<script>
 
 $(function(){
     $('#add').on('click',function(){

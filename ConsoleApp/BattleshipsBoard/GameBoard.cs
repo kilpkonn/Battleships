@@ -26,7 +26,7 @@ namespace BattleshipsBoard
         public bool BackToBackHits { get; set; }
         private int _shipId = 1;
 
-        public List<BoardState> BoardHistory { get; } = new List<BoardState>();
+        public List<BoardState> BoardHistory { get; } = new();
 
         public bool IsSetup { get; private set; } = true;
 
@@ -87,8 +87,67 @@ namespace BattleshipsBoard
             return shipLengths;
         }
 
+        public bool GenerateBoard()
+        {
+            if (IsSetupComplete()) return true;
+            Board[(int) BoardType.WhiteShips] = new int[Height, Width];
+            Board[(int) BoardType.BlackShips] = new int[Height, Width];
+
+            var rnd = new Random();
+            foreach (var (length, count) in ShipCounts.Reverse())
+            {
+                for (int c = 0; c < count * 2; c++)
+                {
+                    HashSet<Tuple<int, int>> optionsY = new();
+                    HashSet<Tuple<int, int>> optionsX = new();
+                    for (int y = 0; y < Height; y++)
+                    {
+                        for (int x = 0; x < Width; x++)
+                        {
+                            bool okY = true;
+                            bool okX = true;
+                            if (WhiteToMove)
+                            {
+                                okX &= x + length < Width && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, true, TouchMode);
+                                okY &= y + length < Height && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, false, TouchMode);
+                            }
+                            else
+                            {
+                                okX &= x + length < Width && IsFree(Board[(int) BoardType.BlackShips], y, x, length, true, TouchMode);
+                                okY &= y + length < Height && IsFree(Board[(int) BoardType.BlackShips], y, x, length, false, TouchMode);
+                            }
+
+
+                            if (okX) optionsX.Add(new Tuple<int, int>(y, x));
+                            if (okY) optionsY.Add(new Tuple<int, int>(y, x));
+                        }
+                    }
+
+                    if (optionsX.Count == 0 && optionsY.Count == 0) return false;
+
+                    if (rnd.Next() % 2 == 0 && optionsX.Count >= 0 || optionsY.Count <= 0)
+                    {
+                        var option = optionsX.ElementAt(rnd.Next(optionsX.Count));
+                        PlaceShip(option.Item1, option.Item2, length, true);
+                    }
+                    else
+                    {
+                        var option = optionsY.ElementAt(rnd.Next(optionsY.Count));
+                        PlaceShip(option.Item1, option.Item2, length, false);
+                    }
+                }
+            }
+
+            return IsSetupComplete();
+        }
+
         public bool PlaceShip(int y, int x, int length, bool horizontal)
         {
+            if (y < 0 || x < 0 || y + length >= Height && !horizontal || x + length >= Width && horizontal)
+            {
+                return false;
+            }
+
             if (!ShipCounts.ContainsKey(length) ||
                 WhiteToMove && CountShipsWithSize(Board[(int) BoardType.WhiteShips], length) >= ShipCounts[length] ||
                 !WhiteToMove && CountShipsWithSize(Board[(int) BoardType.BlackShips], length) >= ShipCounts[length])

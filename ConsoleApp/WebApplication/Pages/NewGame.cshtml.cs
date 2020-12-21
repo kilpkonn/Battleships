@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DAL;
 using Domain;
@@ -14,17 +15,36 @@ namespace WebApplication.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly AppDbContext _db;
 
-        [BindProperty] public int BoardWidth { get; set; } = Battleships.Game.MinBoardWidth;
-        [BindProperty] public int BoardHeight { get; set; } = Battleships.Game.MinBoardHeight;
+        [BindProperty]
+        [Required]
+        [Range(Battleships.Game.MinBoardWidth, Battleships.Game.MaxBoardWidth)]
+        public int BoardWidth { get; set; } = Battleships.Game.MinBoardWidth;
 
-        [BindProperty] public string WhiteName { get; set; } = "Player White";
-        [BindProperty] public string BlackName { get; set; } = "Player Black";
+        [BindProperty]
+        [Required]
+        [Range(Battleships.Game.MinBoardHeight, Battleships.Game.MaxBoardHeight)]
+        public int BoardHeight { get; set; } = Battleships.Game.MinBoardHeight;
 
-        [BindProperty] public TouchMode TouchMode { get; set; } = TouchMode.NoTouch;
+        [BindProperty]
+        [Required]
+        [MaxLength(64)]
+        public string WhiteName { get; set; } = "Player White";
+        [BindProperty] 
+        [Required]
+        [MaxLength(64)]
+        public string BlackName { get; set; } = "Player Black";
 
-        [BindProperty] public bool NewMoveOnHit { get; set; } = true;
+        [BindProperty] 
+        public TouchMode TouchMode { get; set; } = TouchMode.NoTouch;
 
-        [BindProperty] public string GameName { get; set; } = "game_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        [BindProperty] 
+        [Required]
+        public bool NewMoveOnHit { get; set; } = true;
+
+        [BindProperty] 
+        [Required]
+        [MaxLength(64)]
+        public string GameName { get; set; } = "game_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
 
 
         public NewGame(ILogger<IndexModel> logger, AppDbContext db)
@@ -34,7 +54,7 @@ namespace WebApplication.Pages
         }
 
         [BindProperty]
-        public Dictionary<int, int> ShipCounts { get; set; } = new Dictionary<int, int>
+        public Dictionary<int, int> ShipCounts { get; set; } = new()
         {
             {5, 1},
             {4, 2},
@@ -49,7 +69,11 @@ namespace WebApplication.Pages
 
         public IActionResult OnPost()
         {
-            // TODO: Validate stuff
+            if (!ShipCounts.Any(x => x.Value > 0))
+            {
+                return new PageResult();
+            }
+            
             Player? playerWhite = _db.Players.FirstOrDefault(x => x.Name == WhiteName);
             Player? playerBlack = _db.Players.FirstOrDefault(x => x.Name == BlackName);
 
@@ -84,7 +108,7 @@ namespace WebApplication.Pages
             List<BoardState> boardStates = new();
             var state = new BoardState(gameSession, true);
             boardStates.Add(state);
-            
+
             List<BoardTile> boardTiles = new();
             for (int y = 0; y < BoardHeight; y++)
             {
@@ -99,8 +123,8 @@ namespace WebApplication.Pages
             _db.BoardStates.AddRange(boardStates);
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
-            
-            return new RedirectToPageResult("/Setup", new { SessionId = gameSession.GameSessionId});
+
+            return new RedirectToPageResult("/Setup", new {SessionId = gameSession.GameSessionId});
         }
     }
 }

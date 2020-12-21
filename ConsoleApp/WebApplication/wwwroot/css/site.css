@@ -73,44 +73,45 @@ body {
 
 /* Custom
 -------------------------------------------------- */
-.preview-ship {
+button.preview-ship {
   background: #dea126;
 }
 
-.ship {
+button.ship {
   background: #ce512b;
 }
 
-.preview-bomb {
+button.preview-bomb {
   background: #6f4eac;
 }
 
-.hit {
+button.hit {
   background: #b6690a;
 }
 
-.sank {
+button.sank {
   background: #c61717;
 }
 
-.miss {
+button.miss {
   background: #3a6cb8;
 }
 
 table.board {
-  width: min(65vh, 100%);
+  width: 64vh;
 }
 
 td.table-cell {
   padding: 0;
-  margin: 0;
+  margin: 1px;
   line-height: 0;
-  border: #1d2124;
 }
 
 .btn-cell {
   width: 100%;
   padding-top: 100%;
+  border-radius: 3px;
+  background: #b7d4f8;
 }
 
 .btn-important {

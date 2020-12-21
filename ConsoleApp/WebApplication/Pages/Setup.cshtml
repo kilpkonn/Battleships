@@ -5,17 +5,19 @@
     ViewData["Title"] = "Battleships";
 }
 
-<div class="text-center">
-    <table class="table board">
-        @for (int y = 0; y < Model?.GameBoard?.Height; y++)
-        {
-            <tr>
-                @for (int x = 0; x < Model?.GameBoard?.Width; x++)
-                {
-                    <td class="table-cell">
-                        @if (Model.GameBoard.WhiteToMove)
+<div class="container">
+    <div class="row justify-content-center">
+        <div>
+        <table class="table board">
+            @for (int y = 0; y < Model?.GameBoard?.Height; y++)
+            {
+                <tr>
+                    @for (int x = 0; x < Model?.GameBoard?.Width; x++)
+                    {
+                        <td class="table-cell">
+                            @if (Model.GameBoard.WhiteToMove)
                             {
-                                <button onclick="placeShip(@Model.SessionId, @y, @x)"
+                                <button onclick="placeShip(@y, @x)"
                                         onmouseenter="visualizeShip(@y, @x)"
                                         class="btn-cell @Model.CellShipStatus(y, x)"
                                         id="cell-@y-@x">
@@ -24,26 +26,29 @@
                             }
                             else
                             {
-                                <button onclick="placeShip(@Model.SessionId, @y, @x)"
+                                <button onclick="placeShip(@y, @x)"
                                         onmouseenter="visualizeShip(@y, @x)"
                                         class="btn-cell @Model.CellShipStatus(y, x)"
                                         id="cell-@y-@x">
                                     @* @Model.GameBoard.Board[(int) GameBoard.BoardType.BlackShips][y, x] *@
                                 </button>
                             }
-                    </td>
-                }
-            </tr>
-        }
-    </table>
-    <div class="row">
-        <button id="toggle-horizontal" onclick="toggleHorizontal()">Horizontal</button>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <button class="btn btn-warning m-2" id="toggle-horizontal" onclick="toggleHorizontal()">Horizontal</button>
         @foreach (var (length, count) in Model!.GameBoard!.ShipCounts)
         {
-            <button onclick="setShipSize(@length)" id="ship-size-@length">
+            <button class="btn btn-primary m-2" onclick="setShipSize(@length)" id="ship-size-@length">
                 Size @length (@Model.ShipsToPlaceInSize(length))
             </button>
         }
+        <button class="btn btn-success m-2" onclick="generateBoard()">Generate board</button>
     </div>
 </div>
 
@@ -52,21 +57,33 @@
     <script>
     let isHorizontal = true;
     let shipLength = @Model.MaxShipSize();
+    let currY = 0;
+    let currX = 0;
     
-    $(window).keypress(function(e) {
-       if (e.which === 32) {
+    document.body.onkeyup = function(e) {
+       if (e.keyCode === 32) {
           toggleHorizontal();
        }
-    });
+    };
     
-    function placeShip(session, y, x) {
+    function placeShip(y, x) {
       $.post("/Setup", {
-          SessionId: session,
+          SessionId: @Model!.SessionId,
           ClickX: x,
           ClickY: y,
           IsHorizontal: isHorizontal,
           ShipLength: shipLength,
-          __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+          __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+      }, function () {
+          window.location.href = "/Setup?SessionId=@Model!.SessionId";
+      });
+    }
+    
+    function generateBoard() {
+      $.post("/Setup", {
+          SessionId: @Model!.SessionId,
+          GenerateBoard: true,
+          __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
       }, function () {
           window.location.href = "/Setup?SessionId=@Model!.SessionId";
       });
@@ -75,6 +92,7 @@
     function toggleHorizontal() {
         isHorizontal = !isHorizontal;
         $('#toggle-horizontal').text(isHorizontal ? 'Horizontal' : 'Vertical');
+        visualizeShip(currY, currX);
     }
     
     function setShipSize(size) {
@@ -82,6 +100,8 @@
     }
     
     function visualizeShip(y, x) {
+        currY = y;
+        currX = x;
         $('.preview-ship').removeClass('preview-ship');
         for (let i = 0; i < shipLength; i++) {
             if (isHorizontal) {

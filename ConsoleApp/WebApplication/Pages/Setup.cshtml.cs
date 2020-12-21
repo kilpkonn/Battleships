@@ -25,10 +25,12 @@ namespace WebApplication.Pages
 
         [BindProperty(SupportsGet = true)] public int? SessionId { get; set; }
 
-        [BindProperty(SupportsGet = true)] public int? ClickY { get; set; }
-        [BindProperty(SupportsGet = true)] public int? ClickX { get; set; }
-        [BindProperty(SupportsGet = true)] public bool IsHorizontal { get; set; } = true;
-        [BindProperty(SupportsGet = true)] public int? ShipLength { get; set; }
+        [BindProperty] public int? ClickY { get; set; }
+        [BindProperty] public int? ClickX { get; set; }
+        [BindProperty] public bool IsHorizontal { get; set; } = true;
+        [BindProperty] public int? ShipLength { get; set; }
+
+        [BindProperty] public bool GenerateBoard { get; set; } = false;
 
 
         public GameSession? GameSession { get; set; }
@@ -38,7 +40,13 @@ namespace WebApplication.Pages
         {
             if (!LoadSession() || GameBoard!.IsSetupComplete()) return new EmptyResult();
 
-            if (ClickX != null && ClickY != null)
+            if (GenerateBoard)
+            {
+                if (GameBoard.GenerateBoard())
+                {
+                    SaveState();
+                }
+            } else if (ClickX != null && ClickY != null)
             {
                 ProcessSetupMove();
             }
@@ -83,6 +91,11 @@ namespace WebApplication.Pages
 
             GameBoard!.PlaceShip((int) ClickY!, (int) ClickX!, (int) ShipLength, IsHorizontal);
 
+            SaveState();
+        }
+
+        private void SaveState()
+        {
             var state = new BoardState(GameSession!, GameBoard.WhiteToMove);
             GameSession!.BoardStates.Add(state);
             List<BoardTile> boardTiles = new();
