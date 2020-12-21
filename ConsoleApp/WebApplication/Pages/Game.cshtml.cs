@@ -20,6 +20,7 @@ namespace WebApplication.Pages
         [BindProperty(SupportsGet = true)] public int? SessionId { get; set; }
 
         [BindProperty(SupportsGet = true)] public bool Revert { get; set; } = false;
+        [BindProperty(SupportsGet = true)] public bool Streak { get; set; } = false;
 
         [BindProperty] public int? ClickY { get; set; }
         [BindProperty] public int? ClickX { get; set; }
@@ -40,10 +41,11 @@ namespace WebApplication.Pages
 
             if (ClickX != null && ClickY != null)
             {
-                ProcessMove();
+                var hit = ProcessMove();
+                return new JsonResult(hit);
             }
 
-            return new AcceptedResult();
+            return new PageResult();
         }
 
         public IActionResult OnGet()
@@ -126,6 +128,11 @@ namespace WebApplication.Pages
             return "sea";
         }
 
+        public string UnhiddenOnStreak()
+        {
+            return Streak ? "" : "init-hidden";
+        }
+
         private bool LoadSession()
         {
             GameSession = _db.GameSessions.Select(x => x)
@@ -142,9 +149,9 @@ namespace WebApplication.Pages
             return GameBoard != null;
         }
 
-        private void ProcessMove()
+        private bool ProcessMove()
         {
-            GameBoard!.DropBomb((int) ClickY!, (int) ClickX!);
+            var hit = GameBoard!.DropBomb((int) ClickY!, (int) ClickX!);
 
             var state = new BoardState(GameSession!, GameBoard.WhiteToMove);
             GameSession!.BoardStates.Add(state);
@@ -165,6 +172,7 @@ namespace WebApplication.Pages
 
             _db.BoardTiles.AddRange(boardTiles);
             _db.SaveChanges();
+            return hit != false;
         }
 
         private bool IsSank(int boardShipsIdx, int boardHitsIdx, int y, int x, int id,

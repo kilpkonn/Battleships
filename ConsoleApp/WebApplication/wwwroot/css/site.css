@@ -122,3 +122,11 @@ td.table-cell {
 tr.clickable {
   cursor: pointer;
 }
+
+#banner {
+  min-height: 50vh;
+}
+
+.init-hidden {
+  display: none;
+}

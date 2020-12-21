@@ -7,7 +7,21 @@
 
 <div class="text-center">
     <div class="container row">
-        <div class="col-6 justify-content-center">
+        @if (!Model.Streak)
+        {
+            <div class="justify-content-center" id="banner">
+                @if (Model.GameBoard!.WhiteToMove)
+                {
+                    <h4 class="display-4">@Model.GameSession!.PlayerWhite.Name to Move!</h4>
+                }
+                else
+                {
+                    <h4 class="display-4">@Model.GameSession!.PlayerBlack.Name to Move!</h4>
+                }
+                <span>Press any key to continue</span>
+            </div>
+        }
+        <div class="col-6 justify-content-center @Model!.UnhiddenOnStreak()" id="game-hits">
             <h3>Enemy ships</h3>
             <table class="table board m-4">
                 @for (int y = 0; y < Model?.GameBoard?.Height; y++)
@@ -40,7 +54,7 @@
                 }
             </table>
         </div>
-        <div class="col-6 justify-content-center">
+        <div class="col-6 justify-content-center @Model!.UnhiddenOnStreak()" id="game-ships">
             <h3>Own ships</h3>
             <table class="table board m-4">
                 @for (int y = 0; y < Model?.GameBoard?.Height; y++)
@@ -73,14 +87,23 @@
 {
     <script>
     
+    function onKeyPress(e) {
+      $('#banner').delay(300).hide(200);
+      $('#game-hits').delay(500).show(600);
+      $('#game-ships').delay(500).show(600);
+    }
+    
+    document.body.onkeyup = onKeyPress;
+    document.body.onmouseup = onKeyPress;
+    
     function placeBomb(y, x) {
       $.post("/Game", {
           SessionId: @Model?.SessionId,
           ClickX: x,
           ClickY: y,
           __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
-      }, function () {
-          window.location.href = "/Game?SessionId=@Model!.SessionId";
+      }, function (e) {
+          window.location.href = "/Game?SessionId=@Model!.SessionId&Streak=" + e;
       });
     }
     
