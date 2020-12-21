@@ -125,7 +125,7 @@ namespace BattleshipsBoard
 
                     if (optionsX.Count == 0 && optionsY.Count == 0) return false;
 
-                    if (rnd.Next() % 2 == 0 && optionsX.Count >= 0 || optionsY.Count <= 0)
+                    if (rnd.Next() % 2 == 0 && optionsX.Count > 0 || optionsY.Count <= 0)
                     {
                         var option = optionsX.ElementAt(rnd.Next(optionsX.Count));
                         PlaceShip(option.Item1, option.Item2, length, true);

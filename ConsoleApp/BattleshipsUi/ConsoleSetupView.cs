@@ -31,7 +31,8 @@ namespace ConsoleBattleshipsUi
                     ConsoleUtil.WriteBlanks();
                     _renderer.RenderShips(board.Board[(int) layer], length, horizontal);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("\nPress Q to quit!");
+                    Console.WriteLine("\nUse G to autogenerate board instead!");
+                    Console.Write("Press Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
                     {
@@ -61,6 +62,13 @@ namespace ConsoleBattleshipsUi
                             break;
                         case ConsoleKey.Q:
                             ExitCallback?.Invoke();
+                            return;
+                        case ConsoleKey.G:
+                            int n = 0;
+                            while (n < 10 || !board.GenerateBoard())
+                            {
+                                n++;
+                            }
                             return;
                     }
                 }
