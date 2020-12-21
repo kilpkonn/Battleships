@@ -32,6 +32,7 @@ namespace ConsoleBattleshipsUi
                     _renderer.RenderShips(board.Board[(int) layer], length, horizontal);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\nUse G to autogenerate board instead!");
+                    Console.WriteLine("Use R to revert move");
                     Console.Write("Press Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
@@ -69,6 +70,9 @@ namespace ConsoleBattleshipsUi
                             {
                                 n++;
                             }
+                            return;
+                        case ConsoleKey.R:
+                            board.RevertMove();
                             return;
                     }
                 }

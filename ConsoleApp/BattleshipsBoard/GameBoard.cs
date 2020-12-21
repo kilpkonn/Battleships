@@ -272,6 +272,24 @@ namespace BattleshipsBoard
             return isFree;
         }
 
+        public void RevertMove()
+        {
+            if (BoardHistory.Count > 1)
+            {
+                BoardHistory.RemoveAt(BoardHistory.Count - 1);
+                WhiteToMove = BoardHistory.Last().WhiteToMove;
+                Board = ArrayUtils.Clone(BoardHistory.Last().Board);
+            }
+            else
+            {
+                if (BoardHistory.Count > 0)
+                    BoardHistory.RemoveAt(0);
+                WhiteToMove = true;
+                Board[(int) BoardType.WhiteShips] = new int[Height, Width];
+                Board[(int) BoardType.BlackShips] = new int[Height, Width];
+            }
+        }
+
         private void UpdateBoardHistory()
         {
             BoardHistory.Add(new BoardState(ArrayUtils.Clone(Board), WhiteToMove));
@@ -288,7 +306,7 @@ namespace BattleshipsBoard
                 e => Convert.ToInt32(e.Key),
                 e => e.Value);
 
-            GameBoard board = new GameBoard(
+            GameBoard board = new(
                 state.Width,
                 state.Height,
                 shipSizes,

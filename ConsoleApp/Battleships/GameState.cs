@@ -15,6 +15,7 @@ namespace Battleships
             _ui = ui;
             _ui.DropBombCallback = DropBomb;
             _ui.ExitCallback = OnExit;
+            _ui.ToSetupCallback = ToSetup;
         }
 
         public void Step()
@@ -36,6 +37,11 @@ namespace Battleships
         public bool? DropBomb(int y, int x)
         {
             return _game.GameBoard?.DropBomb(y, x);
+        }
+
+        public void ToSetup()
+        {
+            _game.PushState(Game.GameState.Setup);
         }
 
         public void OnExit()

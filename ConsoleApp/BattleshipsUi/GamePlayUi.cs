@@ -11,5 +11,7 @@ namespace ConsoleBattleshipsUi
 
         public Func<int, int, bool?>? DropBombCallback { get; set; }
         public Action? ExitCallback { get; set; }
+        
+        public Action? ToSetupCallback { get; set; }
     }
 }

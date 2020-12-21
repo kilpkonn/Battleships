@@ -7,7 +7,7 @@ namespace ConsoleBattleshipsUi
 {
     public class ConsolePlayView: GamePlayUi
     {
-        private readonly ConsoleRenderer _renderer = new ConsoleRenderer(3, 2);
+        private readonly ConsoleRenderer _renderer = new(3, 2);
         public override void Step(GameBoard board)
         {
             ConsoleUtil.WriteBlanks();
@@ -27,7 +27,8 @@ namespace ConsoleBattleshipsUi
                     ConsoleUtil.WriteBlanks();
                     _renderer.RenderHits(board.Board[(int) layer]);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("\nPress Q to quit!");
+                    Console.WriteLine("\nUser R to revert move");
+                    Console.Write("Press Q to quit!");
                     var input = Console.ReadKey();
                     switch (input.Key)
                     {
@@ -50,6 +51,13 @@ namespace ConsoleBattleshipsUi
                             break;
                         case ConsoleKey.Q:
                             ExitCallback?.Invoke();
+                            return;
+                        case ConsoleKey.R:
+                            board.RevertMove();
+                            if (!board.IsSetupComplete())
+                            {
+                                ToSetupCallback?.Invoke();
+                            }
                             return;
                     }
                 }
