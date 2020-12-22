@@ -43,7 +43,7 @@ namespace WebApplication.Pages
             if (GenerateBoard)
             {
                 bool success = false;
-                for (int i = 0; i < 10 && !success; i++)
+                for (int i = 0; i < 100 && !success; i++)
                 {
                     if (GameBoard.GenerateBoard())
                     {

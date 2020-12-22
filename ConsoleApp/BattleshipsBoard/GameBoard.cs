@@ -108,13 +108,13 @@ namespace BattleshipsBoard
                             bool okX = true;
                             if (WhiteToMove)
                             {
-                                okX &= x + length < Width && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, true, TouchMode);
-                                okY &= y + length < Height && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, false, TouchMode);
+                                okX &= x + length <= Width && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, true, TouchMode);
+                                okY &= y + length <= Height && IsFree(Board[(int) BoardType.WhiteShips], y, x, length, false, TouchMode);
                             }
                             else
                             {
-                                okX &= x + length < Width && IsFree(Board[(int) BoardType.BlackShips], y, x, length, true, TouchMode);
-                                okY &= y + length < Height && IsFree(Board[(int) BoardType.BlackShips], y, x, length, false, TouchMode);
+                                okX &= x + length <= Width && IsFree(Board[(int) BoardType.BlackShips], y, x, length, true, TouchMode);
+                                okY &= y + length <= Height && IsFree(Board[(int) BoardType.BlackShips], y, x, length, false, TouchMode);
                             }
 
 
@@ -143,7 +143,7 @@ namespace BattleshipsBoard
 
         public bool PlaceShip(int y, int x, int length, bool horizontal)
         {
-            if (y < 0 || x < 0 || y + length >= Height && !horizontal || x + length >= Width && horizontal)
+            if (y < 0 || x < 0 || y + length > Height && !horizontal || x + length > Width && horizontal)
             {
                 return false;
             }
@@ -246,10 +246,14 @@ namespace BattleshipsBoard
                         break;
                     case TouchMode.CornersTouch:
                         isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0)] == 0;
-                        isFree &= board[y + (!horizontal ? i : 0) + 1, x + (horizontal ? i : 0)] == 0;
-                        isFree &= board[y + (!horizontal ? i : 0) - 1, x + (horizontal ? i : 0)] == 0;
-                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) + 1] == 0;
-                        isFree &= board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) - 1] == 0;
+                        isFree &= y + (!horizontal ? i : 0) + 1 >= board.GetLength(0) ||
+                                  board[y + (!horizontal ? i : 0) + 1, x + (horizontal ? i : 0)] == 0;
+                        isFree &= y + (!horizontal ? i : 0) <= 0 ||
+                                  board[y + (!horizontal ? i : 0) - 1, x + (horizontal ? i : 0)] == 0;
+                        isFree &= x + (horizontal ? i : 0) + 1 >= board.GetLength(1) ||
+                                  board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) + 1] == 0;
+                        isFree &= x + (horizontal ? i : 0) <= 0 ||
+                                  board[y + (!horizontal ? i : 0), x + (horizontal ? i : 0) - 1] == 0;
                         break;
                     case TouchMode.NoTouch:
                         for (int j = -1; j < 2; j++)
